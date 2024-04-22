@@ -10,6 +10,7 @@ import SignUp from "views/auth/SignUp";
 
 // dashboard routing
 const Dashboard = Loadable(lazy(() => import("views/dashboard/Dashboard")));
+const Place = Loadable(lazy(() => import("views/place/Place")));
 const Profile = Loadable(lazy(() => import("views/profile/Profile")));
 const Home = Loadable(lazy(() => import("views/home/Home")));
 
@@ -35,6 +36,10 @@ const MainRoutes: RouteObject[] = [
       {
         path: "dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "place",
+        element: <Place />,
       },
       {
         path: "profile",

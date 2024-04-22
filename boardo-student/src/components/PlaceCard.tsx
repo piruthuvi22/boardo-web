@@ -68,7 +68,7 @@ export default function PlaceCard({ place }: { place: Place }) {
             image={place?.ImageUrl}
             alt="boarding"
             onClick={() =>
-              navigate("/app/dashboard", {
+              navigate("/app/place", {
                 state: { placeId: place._id },
               })
             }
@@ -100,7 +100,7 @@ export default function PlaceCard({ place }: { place: Place }) {
               flex: "1 0 auto",
             }}
             onClick={() =>
-              navigate("/app/dashboard", { state: { placeId: place._id } })
+              navigate("/app/place", { state: { placeId: place._id } })
             }
           >
             <Typography variant="h6">{place?.PlaceTitle}</Typography>
