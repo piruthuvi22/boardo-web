@@ -14,9 +14,6 @@
 /boardo-admin/build
 /boardo-student/build
 
-/boardo-student/package-lock.json
-/boardo-admin/package-lock.json
-
 # misc
 .env
 .DS_Store
