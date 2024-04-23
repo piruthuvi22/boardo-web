@@ -183,5 +183,11 @@ export default function componentStyleOverrides(theme: any): Components {
         },
       },
     },
+    MuiTextField: {
+      defaultProps: {
+        size: "small",
+        variant: "outlined",
+      },
+    },
   };
 }

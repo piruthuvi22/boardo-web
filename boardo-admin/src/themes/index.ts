@@ -1,4 +1,3 @@
-import { TextField, Theme } from "@mui/material";
 import { createTheme, ThemeOptions } from "@mui/material/styles";
 
 // assets
@@ -113,7 +112,6 @@ export const theme = (customization: any) => {
         fontWeight: 400,
       },
     },
-    //  componen
   };
 
   const themes = createTheme(themeOptions);
