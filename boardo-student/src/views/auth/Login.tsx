@@ -14,11 +14,44 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { TextField2 } from "components/ui-component/customizedComponents";
 import { useNavigate } from "react-router";
+import auth from "../../config/firebase";
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 
 export default function Login() {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
   const navigate = useNavigate();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        if (user.emailVerified) {
+          console.log("User logged in successfully ");
+          navigate("/app");
+        } else {
+          window.alert("Please verify your email address ");
+        }
+      })
+      .catch((error) => {
+        window.alert(error.message);
+      });
+  };
+
+  const handleForgetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        window.alert("Password reset email sent to your email address");
+        navigate("/auth/login");
+      })
+      .catch((error) => {
+        window.alert(error.message);
+      });
   };
 
   return (
@@ -47,8 +80,7 @@ export default function Login() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -59,8 +91,7 @@ export default function Login() {
             component="form"
             noValidate
             onSubmit={handleSubmit}
-            sx={{ mt: 1 }}
-          >
+            sx={{ mt: 1 }}>
             <TextField2
               size="small"
               margin="normal"
@@ -70,6 +101,7 @@ export default function Login() {
               label="Email Address"
               name="email"
               autoComplete="email"
+              onChange={(e) => setEmail(e.target.value)}
               autoFocus
             />
             <TextField2
@@ -81,6 +113,7 @@ export default function Login() {
               label="Password"
               type="password"
               id="password"
+              onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
             <FormControlLabel
@@ -91,14 +124,12 @@ export default function Login() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={() => navigate("/app")}
-            >
+              sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
+              <Grid item xs >
+                <Link href="#" variant="body2" onClick={handleForgetPassword}>
                   Forgot password?
                 </Link>
               </Grid>
