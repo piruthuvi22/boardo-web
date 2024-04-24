@@ -36,7 +36,7 @@ function MyComponent({
 }) {
   const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY!,
+    googleMapsApiKey: `${process.env.REACT_APP_GOOGLE_API_KEY!}`,
     // AIzaSyCYvxXwzodXqEh2AKD8Re3nVIHcht8FZtI
   });
 
@@ -250,7 +250,7 @@ const MapApp = () => {
   const mapRef = useMap();
   const mapRef2 = useRef();
   return (
-    <APIProvider apiKey={process.env.REACT_APP_GOOGLE_API_KEY!}>
+    <APIProvider apiKey={`${process.env.REACT_APP_GOOGLE_API_KEY!}`}>
       <Map
         onCameraChanged={(viewState) => {}}
         style={{ width: "100vw", height: "100vh" }}

@@ -26,7 +26,7 @@ export default function PlaceSearch({
       region: "lk",
       input: "", // Add the 'input' property with an empty string value
     },
-    apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+    apiKey: `${process.env.REACT_APP_GOOGLE_API_KEY!}`,
   });
 
   const [search, setSearch] = useState("");

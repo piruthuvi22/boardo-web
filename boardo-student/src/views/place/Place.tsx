@@ -33,7 +33,7 @@ const Place = () => {
   ] = useLazyGetPlaceByIdQuery();
 
   const { ref } = usePlacesWidget({
-    apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+    apiKey: `${process.env.REACT_APP_GOOGLE_API_KEY!}`,
     onPlaceSelected: (place) => console.log(place),
   });
 

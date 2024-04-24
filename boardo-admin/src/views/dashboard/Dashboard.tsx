@@ -119,7 +119,9 @@ export default function Dashboard() {
               </Box>
             </Upload>
           </Box>
-          <Button type="submit">Submit</Button>
+          <Button variant="contained" type="submit">
+            Submit
+          </Button>
         </form>
       </Box>
     </Paper>
