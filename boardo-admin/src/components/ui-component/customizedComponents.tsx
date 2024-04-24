@@ -27,6 +27,9 @@ export const TextField2 = styled(TextField, {
   "& input": {
     background: "#fff",
   },
+  "& textarea": {
+    background: "#fff",
+  },
   // Chnage border color on hover
   "&:hover": {
     "& fieldset": {
@@ -39,6 +42,10 @@ export const TextField2 = styled(TextField, {
   [theme.breakpoints.down("md")]: {
     width: "100%",
     background: "#fff",
+  },
+
+  "& .MuiFormHelperText-root": {
+    margin: 0,
   },
 }));
 
