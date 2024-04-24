@@ -59,22 +59,14 @@ export default function SearchResult() {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      dispatch(
-        setUserLocationCoordinates({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        })
-      );
+      dispatch(setUserLocationCoordinates(position.coords));
     });
   }, [dispatch]);
 
   useEffect(() => {
     // getAddress(coordinates);
 
-    getAllPlaces({
-      Latitude: coordinates.latitude,
-      Longitude: coordinates.longitude,
-    });
+    getAllPlaces(coordinates);
   }, [getAllPlaces, coordinates]);
 
   const getAddress = async () => {
@@ -143,16 +135,6 @@ export default function SearchResult() {
       </>
     );
   } else {
-    return (
-      <LoaderText
-        isNotFound
-        onRetry={() =>
-          getAllPlaces({
-            Latitude: coordinates.latitude,
-            Longitude: coordinates.longitude,
-          })
-        }
-      />
-    );
+    return <LoaderText isNotFound onRetry={() => getAllPlaces(coordinates)} />;
   }
 }

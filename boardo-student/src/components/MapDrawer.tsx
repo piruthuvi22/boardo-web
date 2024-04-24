@@ -77,7 +77,7 @@ export default function MapDrawer({
           flexDirection={"column"}
         >
           <Paper variant="elevation" sx={{ padding: "10px" }}>
-            <Typography variant="h6">{place.PlaceTitle}</Typography>
+            <Typography variant="h6">{place.name}</Typography>
             <Typography variant="body2" color={theme.palette.grey[400]}>
               Bandaranayake Mawatha, Moratuwa
             </Typography>

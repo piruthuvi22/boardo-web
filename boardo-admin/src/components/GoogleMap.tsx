@@ -59,8 +59,8 @@ function MyComponent({
       allPlaces?.length && zoomToFit();
       selectedPlace &&
         setInitialCenter({
-          lat: selectedPlace.Coordinates?.Latitude,
-          lng: selectedPlace.Coordinates?.Longitude,
+          lat: selectedPlace.coordinates?.latitude,
+          lng: selectedPlace.coordinates?.longitude,
         });
       placeFrom?.lat && zoomToFitTwoCoordinate();
       placeFrom?.lat && calculateRoute();
@@ -74,8 +74,8 @@ function MyComponent({
     const bounds = new window.google.maps.LatLngBounds();
     allPlaces?.forEach((palce) => {
       bounds.extend({
-        lat: palce.Coordinates.Latitude,
-        lng: palce.Coordinates.Longitude,
+        lat: palce.coordinates?.latitude,
+        lng: palce.coordinates?.longitude,
       });
     });
     map?.fitBounds(bounds);
@@ -93,8 +93,8 @@ function MyComponent({
       lng: placeFrom?.lng ?? 0,
     });
     bounds.extend({
-      lat: selectedPlace?.Coordinates.Latitude ?? 0,
-      lng: selectedPlace?.Coordinates.Longitude ?? 0,
+      lat: selectedPlace?.coordinates?.latitude ?? 0,
+      lng: selectedPlace?.coordinates?.longitude ?? 0,
     });
     map?.fitBounds(bounds);
 
@@ -112,8 +112,8 @@ function MyComponent({
         lng: placeFrom?.lng ?? 0,
       },
       destination: {
-        lat: selectedPlace?.Coordinates.Latitude ?? 0,
-        lng: selectedPlace?.Coordinates.Longitude ?? 0,
+        lat: selectedPlace?.coordinates?.latitude ?? 0,
+        lng: selectedPlace?.coordinates?.longitude ?? 0,
       },
       travelMode: travelMode as google.maps.TravelMode,
     });
@@ -131,8 +131,8 @@ function MyComponent({
           ? placeFrom
             ? initialCenter
             : {
-                lat: selectedPlace.Coordinates.Latitude,
-                lng: selectedPlace.Coordinates.Longitude,
+                lat: selectedPlace.coordinates?.latitude,
+                lng: selectedPlace.coordinates?.longitude,
               }
           : initialCenter
       }
@@ -144,19 +144,17 @@ function MyComponent({
       {selectedPlace && (
         <InfoWindow
           position={{
-            lat: selectedPlace.Coordinates.Latitude,
-            lng: selectedPlace.Coordinates.Longitude,
+            lat: selectedPlace.coordinates?.latitude,
+            lng: selectedPlace.coordinates?.longitude,
           }}
           options={{
             pixelOffset: new window.google.maps.Size(0, -50),
           }}
         >
           <div>
-            <Typography variant="subtitle1">
-              {selectedPlace.PlaceTitle}
-            </Typography>
+            <Typography variant="subtitle1">{selectedPlace.name}</Typography>
             <Typography variant="subtitle2">
-              {selectedPlace.Cost} LKR
+              {selectedPlace.cost} LKR
             </Typography>
           </div>
         </InfoWindow>
@@ -194,8 +192,8 @@ function MyComponent({
         {selectedPlace && (
           <Marker
             position={{
-              lat: selectedPlace.Coordinates.Latitude,
-              lng: selectedPlace.Coordinates.Longitude,
+              lat: selectedPlace.coordinates?.latitude,
+              lng: selectedPlace.coordinates?.longitude,
             }}
             icon={{
               url: "https://cdn-icons-png.freepik.com/256/5785/5785102.png?semt=ais_hybrid",
@@ -207,11 +205,11 @@ function MyComponent({
         {allPlaces?.map((place) => (
           <Marker
             position={{
-              lat: place.Coordinates.Latitude,
-              lng: place.Coordinates.Longitude,
+              lat: place.coordinates?.latitude,
+              lng: place.coordinates?.longitude,
             }}
             key={place._id}
-            title={place.PlaceTitle}
+            title={place.name}
             icon={{
               url: "https://cdn-icons-png.freepik.com/256/5785/5785102.png?semt=ais_hybrid",
               // scale: 0.1,
@@ -219,8 +217,8 @@ function MyComponent({
             }}
             children={
               <>
-                <h1>{place.PlaceTitle}</h1>
-                <p>{place.Cost}</p>
+                <h1>{place.name}</h1>
+                <p>{place.cost}</p>
               </>
             }
           />

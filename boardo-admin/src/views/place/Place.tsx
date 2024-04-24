@@ -56,7 +56,7 @@ const Place = () => {
               <Box display={"flex"} flexDirection={"column"} gap={1}>
                 <Box sx={{}}>
                   <img
-                    src={place.ImageUrl}
+                    src={place.imageUrls[0]}
                     alt="hotel"
                     style={{
                       width: "100%",
@@ -75,9 +75,9 @@ const Place = () => {
                 >
                   <Box display={"flex"} justifyContent={"space-between"}>
                     <Box>
-                      <Typography variant="h6">{place.PlaceTitle}</Typography>
+                      <Typography variant="h6">{place.name}</Typography>
                       <Typography variant="body1" sx={{ display: "flex" }}>
-                        {place.Rating} <IconMinusVertical />
+                        {place.rating} <IconMinusVertical />
                         {place.status}
                       </Typography>
                       <Typography
@@ -125,7 +125,7 @@ const Place = () => {
               </Typography>
               <Divider />
               <Typography variant="body1" py={"15px"}>
-                {place.PlaceDescription}
+                {place.description}
               </Typography>
             </Paper>
 
@@ -137,7 +137,7 @@ const Place = () => {
               </Typography>
               <Divider />
               <Box display={"flex"} flexWrap={"wrap"} gap={2} mt={"15px"}>
-                {place.Facilities.Facilities.map((item) => (
+                {place.facilities.facilities.map((item) => (
                   <Chip
                     icon={<Wifi />}
                     label={item}

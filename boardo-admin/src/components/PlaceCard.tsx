@@ -54,7 +54,7 @@ export default function PlaceCard({ place }: { place: Place }) {
           >
             <Box display={"flex"} alignItems={"center"} gap={1}>
               <Star />
-              <span>{place?.Rating}</span>
+              <span>{place?.rating}</span>
             </Box>
           </Box>
           <CardMedia
@@ -65,7 +65,7 @@ export default function PlaceCard({ place }: { place: Place }) {
               objectFit: "cover",
               borderRadius: "10px 0 0 10px",
             }}
-            image={place?.ImageUrl}
+            image={place?.imageUrls[0]}
             alt="boarding"
             onClick={() =>
               navigate("/app/place", {
@@ -103,7 +103,7 @@ export default function PlaceCard({ place }: { place: Place }) {
               navigate("/app/place", { state: { placeId: place._id } })
             }
           >
-            <Typography variant="h6">{place?.PlaceTitle}</Typography>
+            <Typography variant="h6">{place?.name}</Typography>
             <Box display={"flex"} alignItems={"center"} gap={1} mb={1}>
               <LocationOn
                 sx={{ color: theme.palette.grey[400], fontSize: 20 }}
@@ -127,7 +127,7 @@ export default function PlaceCard({ place }: { place: Place }) {
               color={theme.palette.primary.main}
               sx={{ fontWeight: "500" }}
             >
-              {place?.Cost} LKR
+              {place?.cost} LKR
             </Typography>
           </CardContent>
         </Box>

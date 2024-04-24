@@ -1,23 +1,22 @@
 export interface Place {
   _id: string;
-  LandlordId: string;
-  PlaceTitle: string;
-  PlaceDescription: string;
-  ImageUrl: string;
-  Rating: number;
-  Coordinates: {
-    Latitude: number;
-    Longitude: number;
+  userId: string;
+  name: string;
+  description: string;
+  imageUrls: string;
+  rating: number;
+  coordinates: {
+    latitude: number;
+    longitude: number;
   };
-  Facilities: {
-    RoomType: string;
-    NoOfBeds: number;
-    WashRoomType: Array<string>;
-    OfferingMeals: boolean;
-    Facilities: Array<string>;
-    Payment: string;
+  facilities: {
+    roomType: string;
+    noOfBeds: number;
+    washRoomType: Array<string>;
+    facilities: Array<string>;
+    paymentType: string;
   };
-  Cost: number;
+  cost: number;
   status: Status;
 }
 
@@ -29,6 +28,6 @@ export enum Status {
 }
 
 export interface Position {
-  Latitude: number;
-  Longitude: number;
+  latitude: number;
+  longitude: number;
 }

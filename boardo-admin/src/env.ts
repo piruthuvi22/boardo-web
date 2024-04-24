@@ -1,3 +1,3 @@
 export const env = {
-  API: "http://localhost:8082/api",
+  API: "https://boardo-api.vercel.app/api",
 };
