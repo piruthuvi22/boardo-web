@@ -18,6 +18,8 @@ import auth from "../../config/firebase";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 
 export default function Login() {
@@ -25,6 +27,7 @@ export default function Login() {
   const [password, setPassword] = React.useState("");
 
   const navigate = useNavigate();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -51,6 +54,24 @@ export default function Login() {
       })
       .catch((error) => {
         window.alert(error.message);
+      });
+  };
+
+  const provider = new GoogleAuthProvider();
+
+  const handleGoogleSignIn = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        const user = result.user;
+        console.log("sign in with google login: ", user);
+        console.log("sign in with google login token: ", token);
+        navigate("/app");
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        window.alert(errorMessage);
       });
   };
 
@@ -128,7 +149,7 @@ export default function Login() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs >
+              <Grid item xs>
                 <Link href="#" variant="body2" onClick={handleForgetPassword}>
                   Forgot password?
                 </Link>
@@ -139,6 +160,27 @@ export default function Login() {
                 </Link>
               </Grid>
             </Grid>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}>
+            <Button
+              variant="outlined"
+              fullWidth
+              sx={{ mt: 3, mb: 2 }}
+              onClick={handleGoogleSignIn}>
+              <img
+                src="https://unifysolutions.net/supportedproduct/google-signin/Google__G__Logo.svg"
+                alt="google"
+                style={{ width: "20px", height: "20px" , marginRight: "8px"}}
+              />
+              Sign In with Google
+            </Button>
           </Box>
         </Box>
       </Grid>
