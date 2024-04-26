@@ -13,6 +13,7 @@ const SearchResult = Loadable(lazy(() => import("views/SearchResult")));
 const Place = Loadable(lazy(() => import("views/place/Place")));
 const Profile = Loadable(lazy(() => import("views/profile/Profile")));
 const Home = Loadable(lazy(() => import("views/home/Home")));
+const CreatePlace = Loadable(lazy(() => import("views/place/CreatePlace")));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -39,15 +40,24 @@ const MainRoutes: RouteObject[] = [
       },
       {
         path: "place",
-        element: <Place />,
+        children: [
+          {
+            path: "my-places",
+            element: <SearchResult />,
+          },
+          {
+            path: "",
+            element: <Place />,
+          },
+          {
+            path: "create-place",
+            element: <CreatePlace />,
+          },
+        ],
       },
       {
         path: "profile",
         element: <Profile />,
-      },
-      {
-        path: "search?",
-        element: <SearchResult />,
       },
     ],
   },

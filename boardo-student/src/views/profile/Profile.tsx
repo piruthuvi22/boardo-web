@@ -30,6 +30,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Person } from "@mui/icons-material";
 import { PROVINCES_AND_DISTRICTS } from "data/provinceAndDistricts";
+import { toast } from "react-toastify";
 
 interface InputsProfile {
   firstName: string;
@@ -180,11 +181,6 @@ const Profile = () => {
   };
 
   const onUpdatePassword = (data: InputsAccount) => {
-    // if (newPassword !== confirmPassword) {
-    //   window.alert("Passwords do not match");
-    //   return;
-    // }
-
     if (currentUser) {
       const credential = EmailAuthProvider.credential(
         currentUser.email!,
@@ -194,14 +190,22 @@ const Profile = () => {
         .then(() => {
           updatePassword(currentUser, data.newPassword)
             .then(() => {
-              window.alert("Password updated successfully");
+              toast.success("Password updated successfully");
             })
             .catch((error) => {
-              window.alert(error.message);
+              console.log(error);
+              const message = error.message.split("/")[1];
+              const removeLastChar = message.slice(0, -2);
+              const finalMessage = removeLastChar.replace(/-/g, " ");
+              toast.error(finalMessage);
             });
         })
         .catch((error) => {
-          window.alert(error.message);
+          console.log(error);
+          const message = error.message.split("/")[1];
+          const removeLastChar = message.slice(0, -2);
+          const finalMessage = removeLastChar.replace(/-/g, " ");
+          toast.error(finalMessage);
         });
     }
   };
@@ -212,7 +216,7 @@ const Profile = () => {
       user
         .delete()
         .then(() => {
-          window.alert("Account deleted successfully");
+          toast.success("Account deleted successfully");
           navigate("/auth/signup");
         })
         .catch((error) => {

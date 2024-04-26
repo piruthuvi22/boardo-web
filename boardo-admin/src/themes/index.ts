@@ -32,7 +32,6 @@ export const theme = () => {
       flexGrow: number;
       padding: string;
       marginTop: string;
-      marginRight: string;
     };
   }
   const themeOptions: ThemeOptions2 = {
@@ -54,7 +53,6 @@ export const theme = () => {
       flexGrow: 1,
       padding: "20px",
       marginTop: "88px",
-      marginRight: "20px",
     },
     typography: {
       fontFamily: "Poppins, sans-serif",

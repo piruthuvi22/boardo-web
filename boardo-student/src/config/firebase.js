@@ -6,12 +6,12 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD7rr7DiyBSGysWEyCIIrEM-ogwuNI_84g",
-  authDomain: "boardo-9985d.firebaseapp.com",
-  projectId: "boardo-9985d",
-  storageBucket: "boardo-9985d.appspot.com",
-  messagingSenderId: "870090502776",
-  appId: "1:870090502776:web:1b13cfebdf66270b30b38d"
+  apiKey: "AIzaSyDbrSdVtg19W1Scf5ZpObCriHoFm18Z6Zw",
+  authDomain: "boardo-admin.firebaseapp.com",
+  projectId: "boardo-admin",
+  storageBucket: "boardo-admin.appspot.com",
+  messagingSenderId: "611550468478",
+  appId: "1:611550468478:web:f057c66c0aa81c64c1bb2f"
 };
 
 // Initialize Firebase
