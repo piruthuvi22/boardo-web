@@ -14,6 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -83,6 +85,24 @@ export default function Login() {
       })
       .catch((error) => {
         toast.error("Password reset email failed to send. Please try again");
+      });
+  };
+
+  const provider = new GoogleAuthProvider();
+
+  const handleGoogleSignIn = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        const user = result.user;
+        console.log("sign in with google login: ", user);
+        console.log("sign in with google login token: ", token);
+        navigate("/app");
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        window.alert(errorMessage);
       });
   };
 
@@ -166,6 +186,27 @@ export default function Login() {
                 </Link>
               </Grid>
             </Grid>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}>
+            <Button
+              variant="outlined"
+              fullWidth
+              sx={{ mt: 3, mb: 2 }}
+              onClick={handleGoogleSignIn}>
+              <img
+                src="https://unifysolutions.net/supportedproduct/google-signin/Google__G__Logo.svg"
+                alt="google"
+                style={{ width: "20px", height: "20px" , marginRight: "8px"}}
+              />
+              Sign In with Google
+            </Button>
           </Box>
         </Box>
       </Grid>
