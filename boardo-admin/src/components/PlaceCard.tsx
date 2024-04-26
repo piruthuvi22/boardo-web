@@ -67,11 +67,7 @@ export default function PlaceCard({ place }: { place: Place }) {
             }}
             image={place?.imageUrls[0]}
             alt="boarding"
-            onClick={() =>
-              navigate("/app/place", {
-                state: { placeId: place._id },
-              })
-            }
+            onClick={() => navigate(`/app/place?id=${place._id}`, {})}
           />
         </Box>
         <Box
@@ -99,9 +95,7 @@ export default function PlaceCard({ place }: { place: Place }) {
               padding: "10px !important",
               flex: "1 0 auto",
             }}
-            onClick={() =>
-              navigate("/app/place", { state: { placeId: place._id } })
-            }
+            onClick={() => navigate(`/app/place?id=${place._id}`, {})}
           >
             <Typography variant="h6">{place?.name}</Typography>
             <Box display={"flex"} alignItems={"center"} gap={1} mb={1}>

@@ -63,7 +63,7 @@ export default function Login() {
         const user = userCredential.user;
         if (user.emailVerified) {
           toast.success("Sign in successful");
-          navigate("/app");
+          navigate("/app/dashboard");
         } else {
           toast.error("Please verify your email address");
         }

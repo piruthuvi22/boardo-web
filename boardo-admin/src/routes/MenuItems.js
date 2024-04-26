@@ -1,4 +1,10 @@
-import { IconDashboard } from "@tabler/icons-react";
+import {
+  AccountCircle,
+  AddHome,
+  Dashboard,
+  Home,
+  HomeWork,
+} from "@mui/icons-material";
 // ==============================|| MENU ITEMS ||============================== //
 
 export const menuItems = {
@@ -13,8 +19,40 @@ export const menuItems = {
           title: "Dashboard",
           type: "item",
           url: "/app/dashboard",
-          icon: IconDashboard,
+          icon: Dashboard,
           breadcrumbs: false,
+        },
+      ],
+    },
+    {
+      id: "my-places",
+      title: "My Places",
+      type: "group",
+      children: [
+        {
+          id: "my-places",
+          title: "My Places",
+          type: "collapse",
+          icon: HomeWork,
+          breadcrumbs: false,
+          children: [
+            {
+              id: "all-places",
+              title: "All Places",
+              type: "item",
+              url: "/app/place/my-places",
+              icon: Home,
+              breadcrumbs: false,
+            },
+            {
+              id: "new-place",
+              title: "Add New Place",
+              type: "item",
+              url: "/app/place/create-place",
+              icon: AddHome,
+              breadcrumbs: false,
+            },
+          ],
         },
       ],
     },
@@ -27,22 +65,7 @@ export const menuItems = {
           title: "Profile",
           type: "item",
           url: "/app/profile",
-          icon: IconDashboard,
-          breadcrumbs: false,
-        },
-      ],
-    },
-    {
-      id: "search",
-      title: "Search",
-      type: "group",
-      children: [
-        {
-          id: "search",
-          title: "Search",
-          type: "item",
-          url: "/app/search?query=moratuwa",
-          icon: IconDashboard,
+          icon: AccountCircle,
           breadcrumbs: false,
         },
       ],

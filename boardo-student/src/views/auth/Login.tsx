@@ -63,7 +63,7 @@ export default function Login() {
         const user = userCredential.user;
         if (user.emailVerified) {
           toast.success("Sign in successful");
-          navigate("/app");
+          navigate("/app/dashboard");
         } else {
           toast.error("Please verify your email address");
         }
@@ -80,9 +80,7 @@ export default function Login() {
   const handleForgetPassword = () => {
     sendPasswordResetEmail(auth, watchEmail)
       .then(() => {
-        toast.success(
-          "Password reset email sent to your email address. Please check your email."
-        );
+        toast.success("Password reset email sent to your email address. Please check your email.");
         navigate("/auth/login");
       })
       .catch((error) => {
@@ -93,7 +91,7 @@ export default function Login() {
         toast.error(finalMessage);
       });
   };
-
+  
   const provider = new GoogleAuthProvider();
 
   const handleGoogleSignIn = () => {
