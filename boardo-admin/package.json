@@ -23,6 +23,7 @@
     "@types/react-dom": "^18.2.24",
     "@vis.gl/react-google-maps": "^0.8.3",
     "axios": "^1.6.8",
+    "firebase": "^10.11.1",
     "framer-motion": "^11.0.28",
     "i": "^0.3.7",
     "material-ui-popup-state": "^5.1.0",

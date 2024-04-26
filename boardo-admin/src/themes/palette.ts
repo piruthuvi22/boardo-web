@@ -7,7 +7,7 @@ import { PaletteOptions } from "@mui/material";
 
 export default function themePalette(theme: any): PaletteOptions {
   return {
-    mode: theme?.customization?.navType,
+    mode: "light",
     common: {
       black: theme.colors?.darkPaper,
     },

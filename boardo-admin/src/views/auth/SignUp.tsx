@@ -1,8 +1,6 @@
-import * as React from "react";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
@@ -11,35 +9,159 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { TextField2 } from "components/ui-component/customizedComponents";
 import { useNavigate } from "react-router";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Alert,
+  AlertTitle,
+  Collapse,
+  IconButton,
+  TextField,
+  useTheme,
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
+import auth from "../../config/firebase";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+
+interface Inputs {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+const initialValues: Inputs = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
+const schema = z
+  .object({
+    firstName: z.string().min(1, "First Name is required"),
+    lastName: z.string().min(1, "Last Name is required"),
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .email("Please enter a valid email address"),
+    password: z
+      .string()
+      .min(6, "Password should follow the password guidelines")
+      .max(10, "Password should follow the password guidelines")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,10}$/,
+        {
+          message: "Password should follow the password guidelines",
+        }
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export default function SignUp() {
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: initialValues,
+    resolver: zodResolver(schema),
+  });
   const navigate = useNavigate();
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const theme = useTheme();
+
+  const [open, setOpen] = useState(false);
+
+  const watchEmail = watch("email");
+  const watchPassword = watch("password");
+
+  const onSubmit = () => {
+    createUserWithEmailAndPassword(auth, watchEmail, watchPassword)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        if (user) {
+          if (auth.currentUser) {
+            sendEmailVerification(auth.currentUser).then(() => {
+              window.alert("Verification email sent to your email address");
+              navigate("/auth/login");
+            });
+          }
+        }
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(
+          "Error in createUserWithEmailAndPassword() :",
+          errorCode,
+          errorMessage
+        );
+      });
   };
 
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
+    <Grid
+      container
+      component="main"
+      sx={{
+        height: "100vh",
+        width: "100vw",
+        backgroundImage:
+          "url(https://source.unsplash.com/random/1920x1080?wallpapers)",
+        backgroundRepeat: "no-repeat",
+        backgroundColor: (t) =>
+          t.palette.mode === "light" ? t.palette.grey[50] : t.palette.grey[900],
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <Grid
         item
         xs={false}
         sm={4}
         md={7}
-        sx={{
-          backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: (t) =>
-            t.palette.mode === "light"
-              ? t.palette.grey[50]
-              : t.palette.grey[900],
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        display={"flex"}
+        alignItems={"center"}
+      >
+        <Box
+          sx={{
+            paddingY: "50px",
+            paddingLeft: "50px",
+            paddingRight: "100px",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            borderRadius: "0 10px 10px 0",
+          }}
+        >
+          <Typography
+            variant="h1"
+            sx={{
+              color: "#fff",
+              fontWeight: "500",
+              fontSize: "4rem",
+            }}
+          >
+            Find your <br />{" "}
+            <span style={{ color: theme.palette.primary.main }}>
+              accommodation
+            </span>{" "}
+            <br /> with us
+          </Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={12} sm={8} md={5} className="glass">
         <Box
           sx={{
             my: 8,
@@ -57,73 +179,97 @@ export default function SignUp() {
           </Typography>
           <Box
             component="form"
-            noValidate
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             sx={{ mt: 3 }}
           >
-            <Grid container spacing={2}>
+            <Grid container spacing={2} mb={2}>
               <Grid item xs={12} sm={6}>
-                <TextField2
+                <TextField
                   size="small"
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
                   fullWidth
-                  id="firstName"
                   label="First Name"
                   autoFocus
+                  {...register("firstName")}
+                  error={!!errors.firstName}
+                  helperText={errors.firstName?.message}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField2
                   size="small"
-                  required
                   fullWidth
-                  id="lastName"
                   label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
+                  {...register("lastName")}
+                  error={!!errors.lastName}
+                  helperText={errors.lastName?.message}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField2
                   size="small"
-                  required
                   fullWidth
-                  id="email"
                   label="Email Address"
-                  name="email"
                   autoComplete="email"
+                  {...register("email")}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField2
                   size="small"
-                  required
                   fullWidth
-                  name="password"
                   label="Password"
                   type="password"
-                  id="password"
-                  autoComplete="new-password"
+                  {...register("password")}
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                  onFocus={() => setOpen(true)}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+              <Grid item xs={12} sm={6}>
+                <TextField2
+                  size="small"
+                  fullWidth
+                  label="Confirm Password"
+                  type="password"
+                  {...register("confirmPassword")}
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword?.message}
                 />
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={() => navigate("/app")}
-            >
+            <Collapse in={open}>
+              <Alert
+                variant="standard"
+                severity="error"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setOpen(false);
+                    }}
+                  >
+                    <Close fontSize="inherit" />
+                  </IconButton>
+                }
+              >
+                <AlertTitle>Password Guidelines</AlertTitle>
+                <ul>
+                  <li>
+                    Password should be atleast 6 characters long and atmost 10
+                    characters long
+                  </li>
+                  <li>Password should contain atleast one uppercase letter</li>
+                  <li>Password should contain atleast one lowercase letter</li>
+                  <li>Password should contain atleast one number</li>
+                  <li>Password should contain atleast one special character</li>
+                </ul>
+              </Alert>
+            </Collapse>
+            <Button type="submit" fullWidth variant="contained" sx={{ my: 2 }}>
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">

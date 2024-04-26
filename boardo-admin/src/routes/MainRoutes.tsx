@@ -4,12 +4,12 @@ import { RouteObject, useRoutes } from "react-router-dom";
 // project imports
 import MainLayout from "layout/MainLayout";
 import Loadable from "components/ui-component/Loadable";
-import SearchResult from "views/SearchResult";
-import Login from "views/auth/Login";
-import SignUp from "views/auth/SignUp";
 
 // dashboard routing
+const Login = Loadable(lazy(() => import("views/auth/Login")));
+const SignUp = Loadable(lazy(() => import("views/auth/SignUp")));
 const Dashboard = Loadable(lazy(() => import("views/dashboard/Dashboard")));
+const SearchResult = Loadable(lazy(() => import("views/SearchResult")));
 const Place = Loadable(lazy(() => import("views/place/Place")));
 const Profile = Loadable(lazy(() => import("views/profile/Profile")));
 const Home = Loadable(lazy(() => import("views/home/Home")));
