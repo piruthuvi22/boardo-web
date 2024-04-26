@@ -80,11 +80,11 @@ const NavItem = ({ item, level }) => {
       {...listItemProps}
       disabled={item.disabled}
       sx={{
-        mb: 0.5,
+        // mb: 0.5,
         alignItems: "flex-start",
-        backgroundColor: level > 1 ? "transparent !important" : "inherit",
-        py: level > 1 ? 1 : 1.25,
-        pl: `${level * 24}px`,
+        backgroundColor: level > 2 ? "transparent !important" : "inherit",
+        // py: level > 1 ? 1 : 1.25,
+        pl: `${level * 12}px`,
       }}
       selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
       onClick={() => itemHandler(item.id)}
@@ -94,17 +94,13 @@ const NavItem = ({ item, level }) => {
       </ListItemIcon>
       <ListItemText
         primary={
-          <Typography variant="body1" color="inherit">
+          <Typography variant="body2" color="inherit">
             {item.title}
           </Typography>
         }
         secondary={
           item.caption && (
-            <Typography
-              variant="caption"
-              display="block"
-              gutterBottom
-            >
+            <Typography variant="caption" display="block" gutterBottom>
               {item.caption}
             </Typography>
           )

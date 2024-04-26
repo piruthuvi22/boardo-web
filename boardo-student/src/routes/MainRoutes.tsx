@@ -39,15 +39,20 @@ const MainRoutes: RouteObject[] = [
       },
       {
         path: "place",
-        element: <Place />,
+        children: [
+          {
+            path: "",
+            element: <Place />,
+          },
+          {
+            path: "search",
+            element: <SearchResult />,
+          },
+        ],
       },
       {
         path: "profile",
         element: <Profile />,
-      },
-      {
-        path: "search?",
-        element: <SearchResult />,
       },
     ],
   },
