@@ -14,13 +14,21 @@ import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Alert, AlertTitle, Collapse, IconButton, TextField, useTheme } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Collapse,
+  IconButton,
+  TextField,
+  useTheme,
+} from "@mui/material";
 import { Close } from "@mui/icons-material";
 import auth from "../../config/firebase";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
+import { toast } from "react-toastify";
 
 interface Inputs {
   firstName: string;
@@ -88,20 +96,17 @@ export default function SignUp() {
         if (user) {
           if (auth.currentUser) {
             sendEmailVerification(auth.currentUser).then(() => {
-              window.alert("Verification email sent to your email address");
+              toast.success(
+                "Account created successfully. Please verify your email address"
+              );
               navigate("/auth/login");
             });
           }
         }
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(
-          "Error in createUserWithEmailAndPassword() :",
-          errorCode,
-          errorMessage
-        );
+        console.log("Error in createUserWithEmailAndPassword() :", error);
+        toast.error("Error in creating user account. Please try again.");
       });
   };
 
@@ -146,7 +151,11 @@ export default function SignUp() {
               fontSize: "4rem",
             }}
           >
-            Find your <br /> <span style={{color:theme.palette.primary.main}}>accommodation</span> <br /> with us
+            Find your <br />{" "}
+            <span style={{ color: theme.palette.primary.main }}>
+              accommodation
+            </span>{" "}
+            <br /> with us
           </Typography>
         </Box>
       </Grid>

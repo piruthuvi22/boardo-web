@@ -28,6 +28,7 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
+import { toast } from "react-toastify";
 
 interface Inputs {
   firstName: string;
@@ -95,20 +96,17 @@ export default function SignUp() {
         if (user) {
           if (auth.currentUser) {
             sendEmailVerification(auth.currentUser).then(() => {
-              window.alert("Verification email sent to your email address");
+              toast.success(
+                "Account created successfully. Please verify your email address"
+              );
               navigate("/auth/login");
             });
           }
         }
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(
-          "Error in createUserWithEmailAndPassword() :",
-          errorCode,
-          errorMessage
-        );
+        console.log("Error in createUserWithEmailAndPassword() :", error);
+        toast.error("Error in creating user account. Please try again.");
       });
   };
 

@@ -9,6 +9,7 @@ import themes from "./themes";
 
 // project imports
 import NavigationScroll from "./layout/NavigationScroll";
+import { ToastContainer } from "react-toastify";
 
 // ==============================|| APP ||============================== //
 
@@ -20,6 +21,18 @@ const App = () => {
         <NavigationScroll>
           <Routes />
         </NavigationScroll>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </ThemeProvider>
     </StyledEngineProvider>
   );
