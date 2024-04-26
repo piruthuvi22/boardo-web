@@ -36,7 +36,7 @@ import { LoaderText } from "components/LoaderText";
 import Loader from "components/ui-component/Loader";
 import { Place } from "data/dataModels";
 
-setKey("AIzaSyBzYu7sX7i0ojNr2Uw1t711RCnkF9h8i70"); //AIzaSyCjMc0oT2ZkiOh2-DuvmBE4tjazA7Av39M
+setKey(process.env.REACT_APP_GOOGLE_API_KEY!); //AIzaSyCjMc0oT2ZkiOh2-DuvmBE4tjazA7Av39M
 setDefaults({
   language: "en",
   region: "lk",
@@ -64,23 +64,22 @@ export default function SearchResult() {
   }, [dispatch]);
 
   useEffect(() => {
-    // getAddress(coordinates);
-
+    getAddress(coordinates);
     getAllPlaces(coordinates);
   }, [getAllPlaces, coordinates]);
 
-  const getAddress = async () => {
-    let latlong = {
-      latitude: 6.8036664,
-      longitude: 79.9080648,
-    };
+  const getAddress = async (coordinates: Coordinates) => {
+    console.log("aaa");
+    let aa = { latitude: 6.7966944, longitude: 79.9002024 };
     // Get address from latitude & longitude.
-    fromLatLng(latlong.latitude, latlong.longitude)
-      .then(({ results }) => {
+    fromLatLng(6.7966944, 79.9002024)
+      .then(({ results }: { results: any }) => {
         // const { lat, lng } = results[0].geometry.location;
         console.log(results);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   if (isPlacesLoading) {
@@ -88,7 +87,11 @@ export default function SearchResult() {
   } else if ((allPlaces?.length ?? 0) > 0) {
     return (
       <>
-        <Box height={"80px"} py={"10px"}>
+        <Box
+          height={"80px"}
+          py={"10px"}
+          onClick={() => getAddress({ latitude: 0, longitude: 0 })}
+        >
           <Typography variant="body1">
             Accommodations near{" "}
             <span style={{ fontWeight: "700" }}>University of Moratuwa</span>
