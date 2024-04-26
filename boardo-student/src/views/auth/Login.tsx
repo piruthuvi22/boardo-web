@@ -72,7 +72,8 @@ export default function Login() {
         console.log(error);
         const message = error.message.split("/")[1];
         const removeLastChar = message.slice(0, -2);
-        toast.error(removeLastChar);
+        const finalMessage = removeLastChar.replace(/-/g, " ");
+        toast.error(finalMessage);
       });
   };
 
@@ -84,8 +85,12 @@ export default function Login() {
         );
         navigate("/auth/login");
       })
-      .catch(() => {
-        toast.error("Password reset email failed to send. Please try again");
+      .catch((error) => {
+        console.log(error);
+        const message = error.message.split("/")[1];
+        const removeLastChar = message.slice(0, -2);
+        const finalMessage = removeLastChar.replace(/-/g, " ");
+        toast.error(finalMessage);
       });
   };
 
@@ -105,7 +110,8 @@ export default function Login() {
         console.log(error);
         const message = error.message.split("/")[1];
         const removeLastChar = message.slice(0, -2);
-        toast.error(removeLastChar);
+        const finalMessage = removeLastChar.replace(/-/g, " ");
+        toast.error(finalMessage);
       });
   };
 

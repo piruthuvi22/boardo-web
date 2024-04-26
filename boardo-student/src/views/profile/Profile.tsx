@@ -17,6 +17,7 @@ import {
   EmailAuthProvider,
 } from "firebase/auth";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const theme = useTheme();
@@ -43,14 +44,22 @@ const Profile = () => {
         .then(() => {
           updatePassword(user, newPassword)
             .then(() => {
-              window.alert("Password updated successfully");
+              toast.success("Password updated successfully");
             })
             .catch((error) => {
-              window.alert(error.message);
+              console.log(error);
+              const message = error.message.split("/")[1];
+              const removeLastChar = message.slice(0, -2);
+              const finalMessage = removeLastChar.replace(/-/g, " ");
+              toast.error(finalMessage);
             });
         })
         .catch((error) => {
-          window.alert(error.message);
+          console.log(error);
+          const message = error.message.split("/")[1];
+          const removeLastChar = message.slice(0, -2);
+          const finalMessage = removeLastChar.replace(/-/g, " ");
+          toast.error(finalMessage);
         });
     }
   };
@@ -61,7 +70,7 @@ const Profile = () => {
       user
         .delete()
         .then(() => {
-          window.alert("Account deleted successfully");
+          toast.success("Account deleted successfully");
           navigate("/auth/signup");
         })
         .catch((error) => {
