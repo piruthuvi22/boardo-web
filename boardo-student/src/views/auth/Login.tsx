@@ -72,7 +72,8 @@ export default function Login() {
         console.log(error);
         const message = error.message.split("/")[1];
         const removeLastChar = message.slice(0, -2);
-        toast.error(removeLastChar);
+        const finalMessage = removeLastChar.replace(/-/g, " ");
+        toast.error(finalMessage);
       });
   };
 
@@ -105,7 +106,8 @@ export default function Login() {
         console.log(error);
         const message = error.message.split("/")[1];
         const removeLastChar = message.slice(0, -2);
-        toast.error(removeLastChar);
+        const finalMessage = removeLastChar.replace(/-/g, " ");
+        toast.error(finalMessage);
       });
   };
 
