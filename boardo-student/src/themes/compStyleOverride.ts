@@ -17,9 +17,6 @@ export default function componentStyleOverrides(theme: any): Components {
         root: {
           backgroundImage: "none",
         },
-        rounded: {
-          borderRadius: `${theme?.customization?.borderRadius}px`,
-        },
       },
     },
     MuiCardHeader: {
@@ -103,7 +100,6 @@ export default function componentStyleOverrides(theme: any): Components {
       styleOverrides: {
         root: {
           background: bgColor,
-          borderRadius: `${theme?.customization?.borderRadius}px`,
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.colors?.grey400,
           },
@@ -118,7 +114,6 @@ export default function componentStyleOverrides(theme: any): Components {
           fontWeight: 500,
           background: bgColor,
           padding: "15.5px 14px",
-          borderRadius: `${theme?.customization?.borderRadius}px`,
           "&.MuiInputBase-inputSizeSmall": {
             padding: "10px 14px",
             "&.MuiInputBase-inputAdornedStart": {
@@ -128,9 +123,6 @@ export default function componentStyleOverrides(theme: any): Components {
         },
         inputAdornedStart: {
           paddingLeft: 4,
-        },
-        notchedOutline: {
-          borderRadius: `${theme?.customization?.borderRadius}px`,
         },
       },
     },

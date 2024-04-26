@@ -7,12 +7,8 @@ import colors from "../assets/scss/_themes-vars.module.scss";
 // project imports
 import componentStyleOverrides from "./compStyleOverride";
 import themePalette from "./palette";
-/**
- * Represent theme style and structure as per Material-UI
- * @param {JsonObject} customization customization parameter object
- */
 
-export const theme = (customization: any) => {
+export const theme = () => {
   const color = colors;
 
   const themeOption = {
@@ -27,7 +23,6 @@ export const theme = (customization: any) => {
     menuSelected: color.secondaryDark,
     menuSelectedBack: color.grey100,
     divider: color.grey200,
-    customization,
   };
 
   interface ThemeOptions2 extends ThemeOptions {
@@ -39,7 +34,6 @@ export const theme = (customization: any) => {
       padding: string;
       marginTop: string;
       marginRight: string;
-      borderRadius: string;
     };
   }
   const themeOptions: ThemeOptions2 = {
@@ -62,7 +56,6 @@ export const theme = (customization: any) => {
       padding: "20px",
       marginTop: "88px",
       marginRight: "20px",
-      borderRadius: `${themeOption?.customization?.borderRadius}px`,
     },
     typography: {
       fontFamily: "Poppins, sans-serif",
