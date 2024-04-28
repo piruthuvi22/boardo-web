@@ -31,6 +31,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Person } from "@mui/icons-material";
 import { PROVINCES_AND_DISTRICTS } from "data/provinceAndDistricts";
 import { toast } from "react-toastify";
+import AlertDialog from "../../components/Alert";
+import useUser from "hooks/useUser";
 
 interface InputsProfile {
   firstName: string;
@@ -131,9 +133,11 @@ const Profile = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const { userInfo } = useUser();
+
   const [currentTab, setCurrentTab] = useState("1");
   const [districtList, setDistrictList] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!PROVINCES_AND_DISTRICTS || PROVINCES_AND_DISTRICTS?.length === 0)
@@ -160,35 +164,42 @@ const Profile = () => {
   }, [watchProvince, setValue]);
 
   useEffect(() => {
-    if (currentUser) {
-      setCurrentUser(auth.currentUser);
+    if (userInfo) {
+      const name = userInfo.displayName?.split(" ");
+      setValue("firstName", name ? name[0] : "");
+      setValue("lastName", name ? name[1] : "");
+      setValue("phoneNumber", userInfo.providerData[0].phoneNumber || "");
     }
-  }, [auth]);
+  }, [userInfo, setValue]);
 
   const onUpdateProfileDetails = (data: InputsProfile) => {
-    if (currentUser) {
-      updateProfile(currentUser, {
+    if (userInfo) {
+      updateProfile(userInfo, {
         displayName: `${data.firstName} ${data.lastName}`,
         photoURL: "",
       })
         .then(() => {
-          console.log("Profile updated successfully");
+          toast.success("Profile updated successfully");
         })
         .catch((error) => {
-          console.log("Error in updating profile :", error);
+          console.log(error);
+          const message = error.message.split("/")[1];
+          const removeLastChar = message.slice(0, -2);
+          const finalMessage = removeLastChar.replace(/-/g, " ");
+          toast.error(finalMessage);
         });
     }
   };
 
   const onUpdatePassword = (data: InputsAccount) => {
-    if (currentUser) {
+    if (userInfo) {
       const credential = EmailAuthProvider.credential(
-        currentUser.email!,
+        userInfo.email!,
         watchCurrentPassword
       );
-      reauthenticateWithCredential(currentUser, credential)
+      reauthenticateWithCredential(userInfo, credential)
         .then(() => {
-          updatePassword(currentUser, data.newPassword)
+          updatePassword(userInfo, data.newPassword)
             .then(() => {
               toast.success("Password updated successfully");
             })
@@ -220,7 +231,12 @@ const Profile = () => {
           navigate("/auth/signup");
         })
         .catch((error) => {
-          window.alert(error.message);
+          console.log(error);
+          const message = error.message.split("/")[1];
+          const removeLastChar = message.slice(0, -2);
+          const finalMessage = removeLastChar.replace(/-/g, " ");
+          toast.error(finalMessage);
+
           if (error.code === "auth/requires-recent-login") {
             auth.signOut();
             navigate("/auth/login");
@@ -229,28 +245,21 @@ const Profile = () => {
     }
   };
 
-  const handleLogout = () => {
-    auth.signOut().then(() => {
-      navigate("/auth/login");
-    });
-  };
-
   return (
     <>
       <Box>
         <Box display={"flex"} alignItems={"center"} gap={2}>
           <Avatar
-            alt="Remy Sharp"
-            src="/static/media/user-round.27fe79b102ea6aad2f60e66cff82818d.svg"
+            alt={userInfo?.displayName || "User"}
+            src={userInfo?.providerData[0].photoURL || ""}
             sx={{ width: 56, height: 56 }}
           />
           <Typography
             variant={"h4"}
             sx={{
               marginLeft: "10px",
-            }}
-          >
-            Hello Raj
+            }}>
+            {userInfo?.displayName}
           </Typography>
         </Box>
         <Box mt={2}>
@@ -263,8 +272,7 @@ const Profile = () => {
               variant="scrollable"
               value={currentTab}
               onChange={(_: any, value: string) => setCurrentTab(value)}
-              aria-label="basic tabs"
-            >
+              aria-label="basic tabs">
               <Tab label="Profile" value={"1"} />
               <Tab label="Account" value={"2"} />
             </Tabs>
@@ -278,17 +286,16 @@ const Profile = () => {
                     onSubmit={handleSubmitProfile(onUpdateProfileDetails)}
                     style={{
                       marginTop: "20px",
-                    }}
-                  >
+                    }}>
                     <Box
                       display={"flex"}
                       alignItems={"center"}
                       gap={2}
-                      sx={{ mb: 2 }}
-                    >
+                      sx={{ mb: 2 }}>
                       <TextField2
                         label="First Name"
                         sx={{ width: "300px" }}
+                        InputLabelProps={{ shrink: !!watchFirstName }}
                         error={!!errorsProfile.firstName}
                         helperText={errorsProfile.firstName?.message}
                         {...registerProfileInputs("firstName")}
@@ -297,6 +304,7 @@ const Profile = () => {
                       <TextField2
                         label="Last Name"
                         sx={{ width: "300px" }}
+                        InputLabelProps={{ shrink: !!watchLastName }}
                         error={!!errorsProfile.lastName}
                         helperText={errorsProfile.lastName?.message}
                         {...registerProfileInputs("lastName")}
@@ -306,6 +314,7 @@ const Profile = () => {
                     <TextField2
                       label="Phone Number"
                       sx={{ mb: 2, width: "300px" }}
+                      InputLabelProps={{ shrink: !!watchPhoneNumber }}
                       error={!!errorsProfile.phoneNumber}
                       helperText={errorsProfile.phoneNumber?.message}
                       {...registerProfileInputs("phoneNumber")}
@@ -379,14 +388,12 @@ const Profile = () => {
                     onSubmit={handleSubmitAccount(onUpdatePassword)}
                     style={{
                       marginTop: "20px",
-                    }}
-                  >
+                    }}>
                     <Box
                       display={"flex"}
                       flexDirection={"column"}
                       justifyContent={"center"}
-                      gap={2}
-                    >
+                      gap={2}>
                       <TextField2
                         label="Current Password"
                         type="password"
@@ -415,9 +422,29 @@ const Profile = () => {
                       />
                     </Box>
 
-                    <Button type="submit" variant="contained" color="primary">
-                      Update Password
-                    </Button>
+                    <Box
+                      display={"flex"}
+                      justifyContent={"space-between"}
+                      sx={{ gap: 2 }}>
+                      <Button type="submit" variant="contained" color="primary">
+                        Update Password
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setOpen(true)}>
+                        Delete Account
+                      </Button>
+                      <AlertDialog
+                        open={open}
+                        handleClose={() => setOpen(false)}
+                        buttonText="Delete Account"
+                        dialogTitle="Are you sure you want to delete account?"
+                        dialogContent="This action cannot be undone."
+                        handleYes={handleDeleteAccount}
+                      />
+                    </Box>
                   </form>
                 </Paper>
               )}

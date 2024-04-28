@@ -2,7 +2,14 @@ import PropTypes from "prop-types";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
-import { Avatar, Box, ButtonBase, IconButton, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  ButtonBase,
+  IconButton,
+  Typography,
+} from "@mui/material";
 
 // project imports
 import SearchSection from "./SearchSection";
@@ -17,7 +24,9 @@ import {
 } from "store/userLocationSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Replay } from "@mui/icons-material";
-import { useEffect } from "react";
+
+import auth from "../../../config/firebase"
+import { useNavigate } from "react-router";
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -29,6 +38,7 @@ const Header = ({
   const theme = useTheme();
   const dispatch = useDispatch();
   const coordinates = useSelector(getUserLocationCoordinates);
+  const navigate = useNavigate();
 
   const setLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -41,6 +51,13 @@ const Header = ({
     });
   };
 
+  const handleLogout = () => {
+    auth.signOut().then(() => {
+      navigate("/auth/login");
+    });
+  };
+
+
   return (
     <>
       {/* logo & toggler button */}
@@ -51,12 +68,10 @@ const Header = ({
           [theme.breakpoints.down("md")]: {
             width: "auto",
           },
-        }}
-      >
+        }}>
         <Box
           component="span"
-          sx={{ display: { xs: "none", lg: "block" }, flexGrow: 1 }}
-        >
+          sx={{ display: { xs: "none", lg: "block" }, flexGrow: 1 }}>
           <Logo />
         </Box>
         <ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
@@ -72,8 +87,7 @@ const Header = ({
               },
             }}
             onClick={handleLeftDrawerToggle}
-            color="inherit"
-          >
+            color="inherit">
             <IconMenu2 stroke={1.5} size="1.3rem" />
           </Avatar>
         </ButtonBase>
@@ -89,7 +103,13 @@ const Header = ({
       </Box>
       <Box sx={{ flexGrow: 1 }} />
 
-      <ProfileSection />
+      {/* <ProfileSection /> */}
+
+      <Box>
+        <Button
+        onClick={handleLogout}
+        >Log out</Button>
+      </Box>
     </>
   );
 };
