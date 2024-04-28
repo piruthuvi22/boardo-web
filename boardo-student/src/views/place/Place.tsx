@@ -18,12 +18,14 @@ import MapDrawer from "components/MapDrawer";
 import { useEffect, useState } from "react";
 import { usePlacesWidget } from "react-google-autocomplete";
 import { useLocation } from "react-router";
+import { useSearchParams } from "react-router-dom";
 import { useLazyGetPlaceByIdQuery } from "store/api/placeApi";
 
 const Place = () => {
   const theme = useTheme();
-  const location = useLocation();
-  const placeId = location.state.placeId;
+  const [searchParams] = useSearchParams();
+
+  const placeId = searchParams.get("id")!;
 
   const matchDownLg = useMediaQuery(theme.breakpoints.down("lg"));
 

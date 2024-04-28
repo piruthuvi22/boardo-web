@@ -1,10 +1,7 @@
 import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -27,6 +24,7 @@ import auth from "../../config/firebase";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import { toast } from "react-toastify";
 
@@ -88,13 +86,29 @@ export default function SignUp() {
 
   const watchEmail = watch("email");
   const watchPassword = watch("password");
+  const watchFirstName = watch("firstName");
+  const watchLastName = watch("lastName");
 
+  const updateProfileDetails = () => {
+    if (auth.currentUser) {
+      updateProfile(auth.currentUser, {
+        displayName: `${watchFirstName} ${watchLastName}`,
+      })
+        .then(() => {
+          console.log("Profile updated successfully");
+        })
+        .catch((error) => {
+          console.log("Error in updating profile :", error);
+        });
+    }
+  };
   const onSubmit = () => {
     createUserWithEmailAndPassword(auth, watchEmail, watchPassword)
       .then((userCredential) => {
         const user = userCredential.user;
         if (user) {
           if (auth.currentUser) {
+            updateProfileDetails();
             sendEmailVerification(auth.currentUser).then(() => {
               toast.success(
                 "Account created successfully. Please verify your email address"
@@ -182,7 +196,7 @@ export default function SignUp() {
           >
             <Grid container spacing={2} mb={2}>
               <Grid item xs={12} sm={6}>
-                <TextField
+                <TextField2
                   size="small"
                   fullWidth
                   label="First Name"
