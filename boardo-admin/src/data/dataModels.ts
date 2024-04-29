@@ -31,3 +31,13 @@ export interface Position {
   latitude: number;
   longitude: number;
 }
+
+export interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  userRole?: string;
+  phoneNumber?: string;
+  province?: string;
+  district?: string;
+}

@@ -33,6 +33,7 @@ import { PROVINCES_AND_DISTRICTS } from "data/provinceAndDistricts";
 import { toast } from "react-toastify";
 import AlertDialog from "../../components/Alert";
 import useUser from "hooks/useUser";
+import { useUpdateProfileMutation } from "store/api/authApi";
 
 interface InputsProfile {
   firstName: string;
@@ -172,6 +173,11 @@ const Profile = () => {
     }
   }, [userInfo, setValue]);
 
+  const [
+    updateProfileMutation,
+    { isLoading, isError, data: profileUpdateResult },
+  ] = useUpdateProfileMutation();
+
   const onUpdateProfileDetails = (data: InputsProfile) => {
     if (userInfo) {
       updateProfile(userInfo, {
@@ -179,7 +185,21 @@ const Profile = () => {
         photoURL: "",
       })
         .then(() => {
-          toast.success("Profile updated successfully");
+          updateProfileMutation({
+            email: userInfo.email!,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            phoneNumber: data.phoneNumber,
+            province: data.province!,
+            district: data.district!,
+          });
+          console.log("profileUpdateResult",profileUpdateResult);
+          
+          if (profileUpdateResult) {
+            toast.success("Profile updated successfully");
+          } else {
+            toast.error("Error in updating profile");
+          }
         })
         .catch((error) => {
           console.log(error);
