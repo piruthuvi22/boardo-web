@@ -16,7 +16,6 @@ import {
   AlertTitle,
   Collapse,
   IconButton,
-  TextField,
   useTheme,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
@@ -90,48 +89,62 @@ export default function SignUp() {
   const watchFirstName = watch("firstName");
   const watchLastName = watch("lastName");
 
-  const updateProfileDetails = () => {
-    if (auth.currentUser) {
-      updateProfile(auth.currentUser, {
-        displayName: `${watchFirstName} ${watchLastName}`,
-      })
-        .then(() => {
-          console.log("Profile updated successfully");
-        })
-        .catch((error) => {
-          console.log("Error in updating profile :", error);
-        });
+  const updateProfileDetails = async () => {
+    if (!auth.currentUser) {
+      console.log("User not found");
+      return;
     }
+    await updateProfile(auth.currentUser, {
+      displayName: `${watchFirstName} ${watchLastName}`,
+    });
   };
 
-  const [registration, { isLoading, isError }] = useRegisterMutation();
+  const [registration] = useRegisterMutation();
 
   const onSubmit = () => {
     createUserWithEmailAndPassword(auth, watchEmail, watchPassword)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
-        if (user) {
-          if (auth.currentUser) {
-            updateProfileDetails();
-            sendEmailVerification(auth.currentUser).then(() => {
-              console.log("watchEmail :", watchEmail);
-              registration({
-                firstName: watchFirstName,
-                lastName: watchLastName,
-                email: watchEmail,
-                userRole: "ADMIN",
-              });
-              toast.success(
-                "Account created successfully. Please verify your email address"
-              );
-              navigate("/auth/login");
-            });
-          }
+        if (!user || !auth.currentUser) {
+          toast.error("Error in creating account. Please try again later.");
+          return;
         }
+
+        updateProfileDetails();
+        sendEmailVerification(auth.currentUser!).then(() => {
+          registration({
+            firstName: watchFirstName,
+            lastName: watchLastName,
+            email: watchEmail,
+            userRole: "ADMIN",
+          })
+            .unwrap()
+            .then((data) => {
+              if (
+                data.email === watchEmail &&
+                data.firstName === watchFirstName &&
+                data.lastName === watchLastName &&
+                data.userRole === "ADMIN"
+              ) {
+                toast.success(
+                  "Account created successfully. Please verify your email address"
+                );
+                navigate("/auth/login");
+              }
+            })
+            .catch((error) => {
+              console.log("Error in registration(): ", error);
+              toast.error("Error in sending email for verification account. Please try again later.");
+            });
+        });
       })
       .catch((error) => {
-        console.log("Error in createUserWithEmailAndPassword() :", error);
-        toast.error("Error in creating user account. Please try again.");
+        console.log("Error in createUserWithEmailAndPassword(): ", error);
+        const message = error.message.split("/")[1];
+        const removeLastChar = message.slice(0, -2);
+        const finalMessage = removeLastChar.replace(/-/g, " ");
+        console.log("finalMessage: ", finalMessage);
+        toast.error(finalMessage);
       });
   };
 

@@ -1,39 +1,25 @@
-import React, { useEffect, useState } from "react";
-import {
-  Autocomplete,
-  Avatar,
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Grid,
-  Link,
-  Paper,
-  Tab,
-  Tabs,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { useEffect, useState } from "react";
+import { Autocomplete, Avatar, Box, Button, Divider, Paper, Tab, Tabs, Typography } from "@mui/material";
 import { TextField2 } from "components/ui-component/customizedComponents";
 import auth from "../../config/firebase";
 import {
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
-  User,
   updateProfile,
 } from "firebase/auth";
 import { useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Person } from "@mui/icons-material";
 import { PROVINCES_AND_DISTRICTS } from "data/provinceAndDistricts";
 import { toast } from "react-toastify";
 import AlertDialog from "../../components/Alert";
 import useUser from "hooks/useUser";
-import { useUpdateProfileMutation } from "store/api/authApi";
+import {
+  useLazyGetUserByEmailQuery,
+  useUpdateProfileMutation,
+} from "store/api/authApi";
 
 interface InputsProfile {
   firstName: string;
@@ -128,10 +114,7 @@ const Profile = () => {
   const watchDistrict = watchProfile("district");
 
   const watchCurrentPassword = watchAccount("currentPassword");
-  const watchNewPassword = watchAccount("newPassword");
-  const watchConfirmPassword = watchAccount("confirmPassword");
 
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const { userInfo } = useUser();
@@ -164,19 +147,31 @@ const Profile = () => {
     }
   }, [watchProvince, setValue]);
 
+  const [getUserByEmail, { data: userDetails }] = useLazyGetUserByEmailQuery();
+
   useEffect(() => {
     if (userInfo) {
-      const name = userInfo.displayName?.split(" ");
-      setValue("firstName", name ? name[0] : "");
-      setValue("lastName", name ? name[1] : "");
-      setValue("phoneNumber", userInfo.providerData[0].phoneNumber || "");
+      const email = userInfo.email!;
+      const userRole = "ADMIN";
+      getUserByEmail({ email, userRole })
+      .unwrap()
+      .then((res) => {
+        const name = userInfo.displayName?.split(" ");
+        setValue("firstName", name ? name[0] : res?.firstName || "");
+        setValue("lastName", name ? name[1] : res?.lastName || "");
+        setValue(
+          "phoneNumber",
+          userInfo.providerData[0].phoneNumber ||
+            res?.phoneNumber ||
+            ""
+        );
+        setValue("province", res?.province || null);
+        setValue("district", res?.district || null);
+      });
     }
   }, [userInfo, setValue]);
 
-  const [
-    updateProfileMutation,
-    { isLoading, isError, data: profileUpdateResult },
-  ] = useUpdateProfileMutation();
+  const [updateProfileMutation] = useUpdateProfileMutation();
 
   const onUpdateProfileDetails = (data: InputsProfile) => {
     if (userInfo) {
@@ -192,14 +187,13 @@ const Profile = () => {
             phoneNumber: data.phoneNumber,
             province: data.province!,
             district: data.district!,
+          }).then((res) => {
+            if (res) {
+              toast.success("Profile updated successfully");
+              return;
+            }
+            toast.error("Error in updating profile. Please try again later.");
           });
-          console.log("profileUpdateResult",profileUpdateResult);
-          
-          if (profileUpdateResult) {
-            toast.success("Profile updated successfully");
-          } else {
-            toast.error("Error in updating profile");
-          }
         })
         .catch((error) => {
           console.log(error);
@@ -270,7 +264,7 @@ const Profile = () => {
       <Box>
         <Box display={"flex"} alignItems={"center"} gap={2}>
           <Avatar
-            alt={userInfo?.displayName || "User"}
+            alt={userInfo?.displayName || userDetails?.firstName || "User"}
             src={userInfo?.providerData[0].photoURL || ""}
             sx={{ width: 56, height: 56 }}
           />
@@ -279,7 +273,8 @@ const Profile = () => {
             sx={{
               marginLeft: "10px",
             }}>
-            {userInfo?.displayName}
+            {userInfo?.displayName ||
+              `${userDetails?.firstName}  ${userDetails?.lastName}`}
           </Typography>
         </Box>
         <Box mt={2}>
@@ -357,6 +352,7 @@ const Profile = () => {
                               <TextField2
                                 {...params}
                                 label="Province"
+                                InputLabelProps={{ shrink: !!watchProvince }}
                                 error={errorsProfile.province ? true : false}
                                 helperText={errorsProfile.province?.message}
                               />
@@ -382,6 +378,7 @@ const Profile = () => {
                               <TextField2
                                 {...params}
                                 label="District"
+                                InputLabelProps={{ shrink: !!watchDistrict }}
                                 error={errorsProfile.district ? true : false}
                                 helperText={errorsProfile.district?.message}
                               />
