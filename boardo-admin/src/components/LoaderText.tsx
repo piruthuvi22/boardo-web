@@ -6,12 +6,14 @@ export function LoaderText({
   isNotFound = false,
   onRetry = () => {},
   message = "No records found",
+  children,
 }: {
   isLoading?: boolean;
   isError?: boolean;
   isNotFound?: boolean;
   onRetry?: () => void;
   message?: string;
+  children?: React.ReactNode;
 }) {
   return (
     <Box
@@ -40,6 +42,7 @@ export function LoaderText({
           </Button>
         </>
       )}
+      {children}
     </Box>
   );
 }

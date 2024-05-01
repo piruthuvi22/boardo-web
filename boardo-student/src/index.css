@@ -44,3 +44,73 @@
   border: 1px solid rgba(255, 255, 255, 0.125);
   box-shadow: -10px 0 30px 0 rgba(0, 0, 0, 0.2);
 }
+
+.image-list-container {
+  width: 100%; /* Adjust width as needed */
+  overflow-x: scroll; /* Enable horizontal scrolling */
+  white-space: nowrap; /* Prevent line breaks within the list */
+}
+
+.image-list {
+  display: flex; /* Arrange images horizontally */
+  list-style: none; /* Remove default list styling */
+  padding: 0;
+  margin: 0;
+}
+
+.image-list li {
+  margin-right: 10px; /* Add spacing between images */
+}
+
+.image-list img {
+  width: 200px; /* Adjust image width as needed */
+  height: auto;
+}
+
+.swiper {
+  width: 100%;
+  height: 500px;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 24px;
+  background: #222222;
+}
+
+.swiper-slide img {
+  /* width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  position: absolute;
+  left: 50%;
+  top: 50%; */
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.mySwiper2 .swiper-slide-thumb-active {
+  opacity: 1;
+}
+
+::-webkit-scrollbar {
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background-color: #eee;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  /* border-radius: 10px; */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ccc;
+}

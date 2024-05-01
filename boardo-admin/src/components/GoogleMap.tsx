@@ -2,18 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   DirectionsRenderer,
   GoogleMap,
-  InfoBox,
-  InfoBoxF,
   InfoWindow,
-  LoadScript,
   Marker,
-  StandaloneSearchBox,
   useJsApiLoader,
-  useLoadScript,
 } from "@react-google-maps/api";
 import { Place } from "data/dataModels";
 import { APIProvider, Map, useMap } from "@vis.gl/react-google-maps";
-import { TextField2 } from "components/ui-component/customizedComponents";
 import { Typography, useTheme } from "@mui/material";
 
 const containerStyle = {
@@ -40,7 +34,6 @@ function MyComponent({
     // AIzaSyCYvxXwzodXqEh2AKD8Re3nVIHcht8FZtI
   });
 
-  const mapRef = useRef();
   const theme = useTheme();
   const [map, setMap] = useState<google.maps.Map>();
 

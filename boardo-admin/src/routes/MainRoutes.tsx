@@ -9,11 +9,10 @@ import Loadable from "components/ui-component/Loadable";
 const Login = Loadable(lazy(() => import("views/auth/Login")));
 const SignUp = Loadable(lazy(() => import("views/auth/SignUp")));
 const Dashboard = Loadable(lazy(() => import("views/dashboard/Dashboard")));
-const SearchResult = Loadable(lazy(() => import("views/SearchResult")));
+const MyPlaces = Loadable(lazy(() => import("views/MyPlaces")));
 const Place = Loadable(lazy(() => import("views/place/Place")));
 const Profile = Loadable(lazy(() => import("views/profile/Profile")));
 const Home = Loadable(lazy(() => import("views/home/Home")));
-const CreatePlace = Loadable(lazy(() => import("views/place/CreatePlace")));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -43,15 +42,11 @@ const MainRoutes: RouteObject[] = [
         children: [
           {
             path: "my-places",
-            element: <SearchResult />,
+            element: <MyPlaces />,
           },
           {
             path: "",
             element: <Place />,
-          },
-          {
-            path: "create-place",
-            element: <CreatePlace />,
           },
         ],
       },

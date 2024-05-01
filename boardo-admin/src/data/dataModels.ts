@@ -3,7 +3,8 @@ export interface Place {
   userId: string;
   name: string;
   description: string;
-  imageUrls: string;
+  address: string;  
+  imageUrls: Array<{ url: string; name: string; fileRef: string }>;
   rating: number;
   coordinates: {
     latitude: number;
@@ -14,8 +15,8 @@ export interface Place {
     noOfBeds: number;
     washRoomType: Array<string>;
     facilities: Array<string>;
-    paymentType: string;
   };
+  paymentType: string;
   cost: number;
   status: Status;
 }
