@@ -1,4 +1,4 @@
-import { AccessTime, Bookmark, LocationOn, Star } from "@mui/icons-material";
+import { AccessTime, Bathtub, Bookmark, Hotel, LocationOn, NightShelter, Star } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -65,7 +65,7 @@ export default function PlaceCard({ place }: { place: Place }) {
               objectFit: "cover",
               borderRadius: "10px 0 0 10px",
             }}
-            image={place?.imageUrls[0]}
+            image={place?.imageUrls[0].url}
             alt="boarding"
             onClick={() => navigate(`/app/place?id=${place._id}`, {})}
           />
@@ -98,6 +98,39 @@ export default function PlaceCard({ place }: { place: Place }) {
             onClick={() => navigate(`/app/place?id=${place._id}`, {})}
           >
             <Typography variant="h6">{place?.name}</Typography>
+            {/* <Typography variant="body2">{place?.address}</Typography> */}
+            <Box display={"flex"} alignItems={"center"} gap={2}>
+              <Typography
+                variant="subtitle2"
+                display={"flex"}
+                alignItems={"center"}
+                gap={1}
+                color={theme.palette.grey[400]}
+              >
+                <Hotel sx={{ fontSize: "18px" }} />
+                {place?.facilities.noOfBeds}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                display={"flex"}
+                alignItems={"center"}
+                gap={1}
+                color={theme.palette.grey[400]}
+              >
+                <NightShelter sx={{ fontSize: "18px" }} />
+                {place?.facilities.roomType}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                display={"flex"}
+                alignItems={"center"}
+                gap={1}
+                color={theme.palette.grey[400]}
+              >
+                <Bathtub sx={{ fontSize: "18px" }} />
+                {place?.facilities.washRoomType}
+              </Typography>
+            </Box>
             <Box display={"flex"} alignItems={"center"} gap={1} mb={1}>
               <LocationOn
                 sx={{ color: theme.palette.grey[400], fontSize: 20 }}
