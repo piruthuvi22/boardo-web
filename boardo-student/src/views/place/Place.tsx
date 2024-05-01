@@ -92,9 +92,7 @@ const Place = () => {
                       alignItems={"center"}
                       gap={1}
                     >
-                      <LocationOn
-                        sx={{ color: theme.palette.secondary.light }}
-                      />
+                      <LocationOn sx={{ fontSize: "18px" }} />
                       0.6 Km from University of Moratuwa
                     </Typography>
                     <Typography
@@ -103,9 +101,7 @@ const Place = () => {
                       alignItems={"center"}
                       gap={1}
                     >
-                      <AccessTime
-                        sx={{ color: theme.palette.secondary.light }}
-                      />
+                      <AccessTime sx={{ fontSize: "18px" }} />
                       3min
                     </Typography>
 
