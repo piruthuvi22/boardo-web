@@ -1,4 +1,12 @@
-import { AccessTime, LocationOn, Map, Wifi } from "@mui/icons-material";
+import {
+  AccessTime,
+  Bathtub,
+  Hotel,
+  LocationOn,
+  Map,
+  NightShelter,
+  Wifi,
+} from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
@@ -13,6 +21,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { IconMinusVertical } from "@tabler/icons-react";
+import ImageCarousel from "components/ImageCarousel";
 import { LoaderText } from "components/LoaderText";
 import MapDrawer from "components/MapDrawer";
 import { useEffect, useState } from "react";
@@ -57,24 +66,9 @@ const Place = () => {
             <Paper variant="outlined" sx={{ padding: "15px" }}>
               <Box display={"flex"} flexDirection={"column"} gap={1}>
                 <Box sx={{}}>
-                  <img
-                    src={place.imageUrls[0]}
-                    alt="hotel"
-                    style={{
-                      width: "100%",
-                      maxHeight: "400px",
-                      objectFit: "cover",
-                      borderRadius: "4px",
-                    }}
-                  />
+                  <ImageCarousel imagesList={place.imageUrls} />
                 </Box>
-                <Box
-                  sx={
-                    {
-                      // backgroundColor: theme.palette.grey[50],
-                    }
-                  }
-                >
+                <Box sx={{}}>
                   <Box display={"flex"} justifyContent={"space-between"}>
                     <Box>
                       <Typography variant="h6">{place.name}</Typography>
@@ -87,23 +81,43 @@ const Place = () => {
                         display={"flex"}
                         alignItems={"center"}
                         gap={1}
+                        color={theme.palette.grey[500]}
                       >
-                        <LocationOn
-                          sx={{ color: theme.palette.secondary.light }}
-                        />
-                        0.6 Km from University of Moratuwa
+                        <LocationOn sx={{ fontSize: "18px" }} />
+                        {place.address}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        display={"flex"}
-                        alignItems={"center"}
-                        gap={1}
-                      >
-                        <AccessTime
-                          sx={{ color: theme.palette.secondary.light }}
-                        />
-                        3min
-                      </Typography>
+                      <Box display={"flex"} alignItems={"center"} gap={2}>
+                        <Typography
+                          variant="subtitle2"
+                          display={"flex"}
+                          alignItems={"center"}
+                          gap={1}
+                          color={theme.palette.grey[500]}
+                        >
+                          <Hotel sx={{ fontSize: "18px" }} />
+                          {place?.facilities.noOfBeds}
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          display={"flex"}
+                          alignItems={"center"}
+                          gap={1}
+                          color={theme.palette.grey[500]}
+                        >
+                          <NightShelter sx={{ fontSize: "18px" }} />
+                          {place?.facilities.roomType}
+                        </Typography>
+                        <Typography
+                          variant="subtitle2"
+                          display={"flex"}
+                          alignItems={"center"}
+                          gap={1}
+                          color={theme.palette.grey[500]}
+                        >
+                          <Bathtub sx={{ fontSize: "18px" }} />
+                          {place?.facilities.washRoomType}
+                        </Typography>
+                      </Box>
                     </Box>
                     <Box>
                       <Button

@@ -35,6 +35,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { LoaderText } from "components/LoaderText";
 import Loader from "components/ui-component/Loader";
 import { Place } from "data/dataModels";
+import PlaceForm from "./place/PlaceForm";
 
 setKey(process.env.REACT_APP_GOOGLE_API_KEY!); //AIzaSyCjMc0oT2ZkiOh2-DuvmBE4tjazA7Av39M
 setDefaults({
@@ -42,7 +43,7 @@ setDefaults({
   region: "lk",
   outputFormat: OutputFormat.JSON,
 });
-export default function SearchResult() {
+export default function MyPlaces() {
   const theme = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
   const matchDownLg = useMediaQuery(theme.breakpoints.down("lg"));
@@ -56,6 +57,8 @@ export default function SearchResult() {
   ] = useLazyGetAllPlacesQuery();
 
   const [selectedPlace, setSelectedPlace] = useState<Place | undefined>();
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [editPlace, setEditPlace] = useState<Place | undefined>();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -64,7 +67,9 @@ export default function SearchResult() {
   }, [dispatch]);
 
   useEffect(() => {
-    getAddress(coordinates);
+    // getAddress(coordinates);
+    console.log("UseEff");
+    
     getAllPlaces(coordinates);
   }, [getAllPlaces, coordinates]);
 
@@ -82,25 +87,37 @@ export default function SearchResult() {
       });
   };
 
+  const handleEditPlace = (place: Place) => {
+    setEditPlace(place);
+    setOpenDrawer(true);
+  };
+
   if (isPlacesLoading) {
     return <LoaderText isLoading />;
   } else if ((allPlaces?.length ?? 0) > 0) {
     return (
       <>
         <Box
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
           height={"80px"}
           py={"10px"}
-          onClick={() => getAddress({ latitude: 0, longitude: 0 })}
         >
-          <Typography variant="body1">
-            Accommodations near{" "}
-            <span style={{ fontWeight: "700" }}>University of Moratuwa</span>
-          </Typography>
-          <Typography variant="body1">
-            Showing{" "}
-            <span style={{ fontWeight: "700" }}>{allPlaces?.length}</span>{" "}
-            places
-          </Typography>
+          <Box>
+            <Typography variant="body1">
+              Showing{" "}
+              <span style={{ fontWeight: "700" }}>{allPlaces?.length}</span>{" "}
+              places
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            onClick={() => setOpenDrawer(true)}
+            sx={{ width: "150px" }}
+          >
+            Add New Place
+          </Button>
         </Box>
 
         <Box className="container">
@@ -119,7 +136,7 @@ export default function SearchResult() {
                 mb={2}
                 onMouseEnter={() => setSelectedPlace(place)}
               >
-                <PlaceCard place={place} />
+                <PlaceCard place={place} handleEditPlace={handleEditPlace} />
               </Box>
             ))}
           </Box>
@@ -135,9 +152,32 @@ export default function SearchResult() {
             <GoogleMap allPlaces={allPlaces} selectedPlace={selectedPlace} />
           </Box>
         </Box>
+
+        <PlaceForm
+          open={openDrawer}
+          place={editPlace}
+          closeDrawer={() => {
+            setEditPlace(undefined);
+            setOpenDrawer(false);
+          }}
+        />
       </>
     );
   } else {
-    return <LoaderText isNotFound onRetry={() => getAllPlaces(coordinates)} />;
+    return (
+      <>
+        <LoaderText isNotFound onRetry={() => getAllPlaces(coordinates)}>
+          <Button
+            variant="contained"
+            onClick={() => setOpenDrawer(true)}
+            sx={{ width: "150px" }}
+          >
+            Add New Place
+          </Button>
+        </LoaderText>
+
+        <PlaceForm open={openDrawer} closeDrawer={() => setOpenDrawer(false)} />
+      </>
+    );
   }
 }

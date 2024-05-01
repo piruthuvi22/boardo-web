@@ -1,9 +1,19 @@
-import { AccessTime, Bookmark, LocationOn, Star } from "@mui/icons-material";
+import {
+  AccessTime,
+  Bathtub,
+  Bookmark,
+  Edit,
+  Hotel,
+  LocationOn,
+  NightShelter,
+  Star,
+} from "@mui/icons-material";
 import {
   Box,
   Card,
   CardContent,
   CardMedia,
+  Chip,
   IconButton,
   Paper,
   Typography,
@@ -12,7 +22,13 @@ import { useTheme } from "@mui/material/styles";
 import { Place } from "data/dataModels";
 import { useNavigate } from "react-router";
 
-export default function PlaceCard({ place }: { place: Place }) {
+export default function PlaceCard({
+  place,
+  handleEditPlace,
+}: {
+  place: Place;
+  handleEditPlace: (place: Place) => void;
+}) {
   const theme = useTheme();
   const navigate = useNavigate();
   return (
@@ -65,7 +81,7 @@ export default function PlaceCard({ place }: { place: Place }) {
               objectFit: "cover",
               borderRadius: "10px 0 0 10px",
             }}
-            image={place?.imageUrls[0]}
+            image={place?.imageUrls[0].url}
             alt="boarding"
             onClick={() => navigate(`/app/place?id=${place._id}`, {})}
           />
@@ -86,8 +102,13 @@ export default function PlaceCard({ place }: { place: Place }) {
               color: "#fff",
             }}
           >
-            <IconButton color="primary" size="small" sx={{ zIndex: 50 }}>
-              <Bookmark />
+            <IconButton
+              color="primary"
+              size="small"
+              sx={{ zIndex: 50 }}
+              onClick={() => handleEditPlace(place)}
+            >
+              <Edit />
             </IconButton>
           </Box>
           <CardContent
@@ -98,24 +119,39 @@ export default function PlaceCard({ place }: { place: Place }) {
             onClick={() => navigate(`/app/place?id=${place._id}`, {})}
           >
             <Typography variant="h6">{place?.name}</Typography>
-            <Box display={"flex"} alignItems={"center"} gap={1} mb={1}>
-              <LocationOn
-                sx={{ color: theme.palette.grey[400], fontSize: 20 }}
-              />
-              <Typography variant="body2" textOverflow={"ellipsis"}>
-                0.6 Km from University of Moratuwa
+            <Typography variant="body2">{place?.address}</Typography>
+            <Box display={"flex"} alignItems={"center"} gap={2}>
+              <Typography
+                variant="subtitle2"
+                display={"flex"}
+                alignItems={"center"}
+                gap={1}
+                color={theme.palette.grey[400]}
+              >
+                <Hotel sx={{ fontSize: "18px" }} />
+                {place?.facilities.noOfBeds}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                display={"flex"}
+                alignItems={"center"}
+                gap={1}
+                color={theme.palette.grey[400]}
+              >
+                <NightShelter sx={{ fontSize: "18px" }} />
+                {place?.facilities.roomType}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                display={"flex"}
+                alignItems={"center"}
+                gap={1}
+                color={theme.palette.grey[400]}
+              >
+                <Bathtub sx={{ fontSize: "18px" }} />
+                {place?.facilities.washRoomType}
               </Typography>
             </Box>
-
-            <Box display={"flex"} alignItems={"center"} gap={1} mb={1}>
-              <AccessTime
-                sx={{ color: theme.palette.grey[400], fontSize: 20 }}
-              />
-              <Typography variant="body2" textOverflow={"ellipsis"}>
-                3min
-              </Typography>
-            </Box>
-
             <Typography
               variant="h5"
               color={theme.palette.primary.main}
