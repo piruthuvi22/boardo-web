@@ -2,7 +2,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import customizationReducer from "./customizationReducer";
 import { apiSlice } from "store/api/apiSlice";
 import userDataSlice from "./userLocationSlice";
-import counterSlice from "./counterClice";
 
 // ==============================|| REDUX - MAIN STORE ||============================== //
 
@@ -10,7 +9,6 @@ export const store = configureStore({
   reducer: {
     customization: customizationReducer,
     userLocation: userDataSlice,
-    counter: counterSlice,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -21,7 +19,6 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
-
 
 // export type RootState = ReturnType<typeof store.getState>
 // export type AppDispatch = typeof store.dispatch

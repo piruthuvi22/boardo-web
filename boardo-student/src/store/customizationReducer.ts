@@ -8,14 +8,12 @@ interface CustomizationState {
   isOpen: string[];
   defaultId: string;
   opened: boolean;
-  count: number;
 }
 
 export const initialState: CustomizationState = {
   isOpen: [], // for active default menu
   defaultId: "default",
   opened: true,
-  count: 0,
 };
 
 export const customizationSlice = createSlice({

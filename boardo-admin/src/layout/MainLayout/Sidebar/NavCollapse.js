@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 // project imports
-import NavItem from "../NavItem";
+import NavItem from "./NavItem";
 
 // assets
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -116,11 +116,7 @@ const NavCollapse = ({ menu, level }) => {
         </ListItemIcon>
         <ListItemText
           primary={
-            <Typography
-              variant={"body2"}
-              color="inherit"
-              sx={{ my: "auto" }}
-            >
+            <Typography variant={"body2"} color="inherit" sx={{ my: "auto" }}>
               {menu.title}
             </Typography>
           }

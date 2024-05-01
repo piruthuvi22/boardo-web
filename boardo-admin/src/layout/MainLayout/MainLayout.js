@@ -13,7 +13,7 @@ import {
 
 // project imports
 import Header from "./Header/Header";
-import Sidebar from "./Sidebar";
+import Sidebar from "./Sidebar/Sidebar";
 import { drawerWidth } from "../../store/constant";
 
 // assets

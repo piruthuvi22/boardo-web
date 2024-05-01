@@ -23,14 +23,13 @@ import GoogleMap from "components/GoogleMap";
 import PlaceCard from "components/PlaceCard";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import theme from "themes";
+import theme from "themes/theme";
 // import { useAppDispatch, useAppSelector } from "store/hooks";
 import {
   Coordinates,
   getUserLocationCoordinates,
   setUserLocationCoordinates,
 } from "store/userLocationSlice";
-import { getCountValue, increment } from "store/counterClice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoaderText } from "components/LoaderText";
 import Loader from "components/ui-component/Loader";
@@ -69,7 +68,7 @@ export default function MyPlaces() {
   useEffect(() => {
     // getAddress(coordinates);
     console.log("UseEff");
-    
+
     getAllPlaces(coordinates);
   }, [getAllPlaces, coordinates]);
 

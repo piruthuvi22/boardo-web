@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 // third party
 import { BrowserRouter } from "react-router-dom";
@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 
 // project imports
 import App from "./App";
-import { store } from "./store";
+import { store } from "./store/store";
 
 // style + assets
 import "./assets/scss/style.scss";

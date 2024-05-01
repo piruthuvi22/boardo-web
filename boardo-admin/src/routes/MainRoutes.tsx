@@ -2,7 +2,7 @@ import { lazy } from "react";
 import { RouteObject, useRoutes } from "react-router-dom";
 
 // project imports
-import MainLayout from "layout/MainLayout";
+import MainLayout from "layout/MainLayout/MainLayout";
 import Loadable from "components/ui-component/Loadable";
 
 // dashboard routing

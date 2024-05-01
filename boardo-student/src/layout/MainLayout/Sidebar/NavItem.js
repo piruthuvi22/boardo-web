@@ -18,7 +18,7 @@ import {
 // project imports
 // assets
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import { menuOpen, setMenu } from "../../../../../store/customizationReducer";
+import { menuOpen, setMenu } from "../../../store/customizationReducer";
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 

@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 // project imports
-import NavItem from "../NavItem";
+import NavItem from "./NavItem";
 
 // assets
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
