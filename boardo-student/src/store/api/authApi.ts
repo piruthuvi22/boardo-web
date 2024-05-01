@@ -1,4 +1,3 @@
-import { string } from "prop-types";
 import { apiSlice } from "./apiSlice";
 import { User } from "data/dataModels";
 
@@ -18,8 +17,8 @@ const extendedApi = apiSlice.injectEndpoints({
         body: user,
       }),
     }),
-    getUserByEmail: builder.query<User, {email: string,userRole: string}>({
-      query: ({email, userRole}) => `/users/get-user-by-email/${email}/${userRole}`,
+    getUserByEmail: builder.query<User, {email:string, userRole:string}>({
+      query: ({email,userRole}) => `/users/get-user-by-email/${email}/${userRole}`,
     }),
   }),
   overrideExisting: true,

@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Autocomplete,
   Avatar,
   Box,
   Button,
-  Checkbox,
   Divider,
-  FormControlLabel,
-  Grid,
-  Link,
   Paper,
   Tab,
   Tabs,
@@ -21,18 +17,20 @@ import {
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
-  User,
   updateProfile,
 } from "firebase/auth";
 import { useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Person } from "@mui/icons-material";
 import { PROVINCES_AND_DISTRICTS } from "data/provinceAndDistricts";
 import { toast } from "react-toastify";
 import AlertDialog from "../../components/Alert";
 import useUser from "hooks/useUser";
+import {
+  useUpdateProfileMutation,
+  useLazyGetUserByEmailQuery,
+} from "store/api/authApi";
 
 interface InputsProfile {
   firstName: string;
@@ -163,14 +161,32 @@ const Profile = () => {
     }
   }, [watchProvince, setValue]);
 
+  const [getUserByEmail, { data: userDetails }] = useLazyGetUserByEmailQuery();
+  console.log("userDetsails : ", userDetails);
+
   useEffect(() => {
     if (userInfo) {
-      const name = userInfo.displayName?.split(" ");
-      setValue("firstName", name ? name[0] : "");
-      setValue("lastName", name ? name[1] : "");
-      setValue("phoneNumber", userInfo.providerData[0].phoneNumber || "");
+      const email = userInfo.email!;
+      const userRole = "STUDENT";
+      getUserByEmail({ email, userRole })
+        .unwrap()
+        .then((res) => {
+          const name = userInfo.displayName?.split(" ");
+          setValue("firstName", name ? name[0] : res?.firstName || "");
+          setValue("lastName", name ? name[1] : res?.lastName || "");
+          setValue(
+            "phoneNumber",
+            userInfo.providerData[0].phoneNumber ||
+              res?.phoneNumber ||
+              ""
+          );
+          setValue("province", res?.province || null);
+          setValue("district", res?.district || null);
+        });
     }
   }, [userInfo, setValue]);
+
+  const [updateProfileMutation] = useUpdateProfileMutation();
 
   const onUpdateProfileDetails = (data: InputsProfile) => {
     if (userInfo) {
@@ -179,7 +195,21 @@ const Profile = () => {
         photoURL: "",
       })
         .then(() => {
-          toast.success("Profile updated successfully");
+          updateProfileMutation({
+            email: userInfo.email!,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            phoneNumber: data.phoneNumber,
+            province: data.province!,
+            district: data.district!,
+          }).then((res) => {
+            console.log(res);
+            if (res) {
+              toast.success("Profile updated successfully");
+              return;
+            }
+            toast.error("Error in updating profile. Please try again later.");
+          });
         })
         .catch((error) => {
           console.log(error);
@@ -250,7 +280,7 @@ const Profile = () => {
       <Box>
         <Box display={"flex"} alignItems={"center"} gap={2}>
           <Avatar
-            alt={userInfo?.displayName || "User"}
+            alt={userInfo?.displayName || userDetails?.firstName || "User"}
             src={userInfo?.providerData[0].photoURL || ""}
             sx={{ width: 56, height: 56 }}
           />
@@ -259,7 +289,8 @@ const Profile = () => {
             sx={{
               marginLeft: "10px",
             }}>
-            {userInfo?.displayName}
+            {userInfo?.displayName ||
+              `${userDetails?.firstName}  ${userDetails?.lastName}`}
           </Typography>
         </Box>
         <Box mt={2}>
@@ -337,6 +368,7 @@ const Profile = () => {
                               <TextField2
                                 {...params}
                                 label="Province"
+                                InputLabelProps={{ shrink: !!watchProvince }}
                                 error={errorsProfile.province ? true : false}
                                 helperText={errorsProfile.province?.message}
                               />
@@ -362,6 +394,7 @@ const Profile = () => {
                               <TextField2
                                 {...params}
                                 label="District"
+                                InputLabelProps={{ shrink: !!watchDistrict }}
                                 error={errorsProfile.district ? true : false}
                                 helperText={errorsProfile.district?.message}
                               />

@@ -16,7 +16,6 @@ import {
   AlertTitle,
   Collapse,
   IconButton,
-  TextField,
   useTheme,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
@@ -27,6 +26,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { toast } from "react-toastify";
+import { useRegisterMutation } from "store/api/authApi";
 
 interface Inputs {
   firstName: string;
@@ -37,11 +37,11 @@ interface Inputs {
 }
 
 const initialValues: Inputs = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
+  firstName: "Sagini",
+  lastName: "Navaratnam",
+  email: "saginisaju@gmail.com",
+  password: "Abcd@123",
+  confirmPassword: "Abcd@123",
 };
 
 const schema = z
@@ -89,38 +89,69 @@ export default function SignUp() {
   const watchFirstName = watch("firstName");
   const watchLastName = watch("lastName");
 
-  const updateProfileDetails = () => {
-    if (auth.currentUser) {
-      updateProfile(auth.currentUser, {
-        displayName: `${watchFirstName} ${watchLastName}`,
-      })
-        .then(() => {
-          console.log("Profile updated successfully");
-        })
-        .catch((error) => {
-          console.log("Error in updating profile :", error);
-        });
+  const updateProfileDetails = async () => {
+    if (!auth.currentUser) {
+      console.log("User not found");
+      return;
     }
-  };
-  const onSubmit = () => {
-    createUserWithEmailAndPassword(auth, watchEmail, watchPassword)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        if (user) {
-          if (auth.currentUser) {
-            updateProfileDetails();
-            sendEmailVerification(auth.currentUser).then(() => {
-              toast.success(
-                "Account created successfully. Please verify your email address"
-              );
-              navigate("/auth/login");
-            });
-          }
-        }
+    await updateProfile(auth.currentUser, {
+      displayName: `${watchFirstName} ${watchLastName}`,
+    })
+      .then(() => {
+        console.log("Profile updated successfully");
       })
       .catch((error) => {
-        console.log("Error in createUserWithEmailAndPassword() :", error);
-        toast.error("Error in creating user account. Please try again.");
+        console.log("Error in updateProfile(): ", error);
+      });
+  };
+
+  const [registration] = useRegisterMutation();
+
+  const onSubmit = () => {
+    createUserWithEmailAndPassword(auth, watchEmail, watchPassword)
+      .then(async (userCredential) => {
+        const user = userCredential.user;
+        if (!user || !auth.currentUser) {
+          toast.error("Error in creating account. Please try again later.");
+          return;
+        }
+        updateProfileDetails();
+        sendEmailVerification(auth.currentUser!).then(() => {
+          registration({
+            firstName: watchFirstName,
+            lastName: watchLastName,
+            email: watchEmail,
+            userRole: "STUDENT",
+          })
+            .unwrap()
+            .then((data) => {
+              if (
+                data.email === watchEmail &&
+                data.firstName === watchFirstName &&
+                data.lastName === watchLastName &&
+                data.userRole === "STUDENT"
+              ) {
+                toast.success(
+                  "Account created successfully. Please verify your email address"
+                );
+                navigate("/auth/login");
+              }
+            })
+            .catch((error) => {
+              console.log("Error in registration(): ", error);
+              toast.error(
+                "Error in sending email for verification account. Please try again later."
+              );
+            });
+        });
+      })
+      .catch((error) => {
+        console.log("Error in createUserWithEmailAndPassword(): ", error);
+        const message = error.message.split("/")[1];
+        const removeLastChar = message.slice(0, -2);
+        const finalMessage = removeLastChar.replace(/-/g, " ");
+        console.log("finalMessage: ", finalMessage);
+        toast.error(finalMessage);
       });
   };
 
@@ -138,16 +169,14 @@ export default function SignUp() {
           t.palette.mode === "light" ? t.palette.grey[50] : t.palette.grey[900],
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}
-    >
+      }}>
       <Grid
         item
         xs={false}
         sm={4}
         md={7}
         display={"flex"}
-        alignItems={"center"}
-      >
+        alignItems={"center"}>
         <Box
           sx={{
             paddingY: "50px",
@@ -155,16 +184,14 @@ export default function SignUp() {
             paddingRight: "100px",
             backgroundColor: "rgba(0,0,0,0.5)",
             borderRadius: "0 10px 10px 0",
-          }}
-        >
+          }}>
           <Typography
             variant="h1"
             sx={{
               color: "#fff",
               fontWeight: "500",
               fontSize: "4rem",
-            }}
-          >
+            }}>
             Find your <br />{" "}
             <span style={{ color: theme.palette.primary.main }}>
               accommodation
@@ -181,8 +208,7 @@ export default function SignUp() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -192,8 +218,7 @@ export default function SignUp() {
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
-            sx={{ mt: 3 }}
-          >
+            sx={{ mt: 3 }}>
             <Grid container spacing={2} mb={2}>
               <Grid item xs={12} sm={6}>
                 <TextField2
@@ -262,12 +287,10 @@ export default function SignUp() {
                     size="small"
                     onClick={() => {
                       setOpen(false);
-                    }}
-                  >
+                    }}>
                     <Close fontSize="inherit" />
                   </IconButton>
-                }
-              >
+                }>
                 <AlertTitle>Password Guidelines</AlertTitle>
                 <ul>
                   <li>
