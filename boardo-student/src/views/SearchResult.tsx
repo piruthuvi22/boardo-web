@@ -87,11 +87,7 @@ export default function SearchResult() {
   } else if ((allPlaces?.length ?? 0) > 0) {
     return (
       <>
-        <Box
-          height={"80px"}
-          py={"10px"}
-          onClick={() => getAddress({ latitude: 0, longitude: 0 })}
-        >
+        <Box height={"80px"} py={"10px"}>
           <Typography variant="body1">
             Accommodations near{" "}
             <span style={{ fontWeight: "700" }}>University of Moratuwa</span>

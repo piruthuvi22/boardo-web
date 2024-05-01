@@ -1,6 +1,7 @@
 import {
   AccountCircle,
   AddHome,
+  Bookmarks,
   Dashboard,
   Home,
   HomeWork,
@@ -32,19 +33,18 @@ export const menuItems = {
         {
           id: "search-places",
           title: "Search Places",
-          type: "collapse",
-          icon: HomeWork,
+          type: "item",
+          url: "/app/place/search",
+          icon: Home,
           breadcrumbs: false,
-          children: [
-            {
-              id: "search-places",
-              title: "Search Places",
-              type: "item",
-              url: "/app/place/search",
-              icon: Home,
-              breadcrumbs: false,
-            },
-          ],
+        },
+        {
+          id: "wishlist",
+          title: "Wishlist",
+          type: "item",
+          url: "/app/place/wishlist",
+          icon: Bookmarks,
+          breadcrumbs: false,
         },
       ],
     },

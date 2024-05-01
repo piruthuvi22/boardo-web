@@ -4,6 +4,7 @@ import { RouteObject, useRoutes } from "react-router-dom";
 // project imports
 import MainLayout from "layout/MainLayout";
 import Loadable from "components/ui-component/Loadable";
+import WishList from "views/wishlist/Wishlist";
 
 // dashboard routing
 const Login = Loadable(lazy(() => import("views/auth/Login")));
@@ -47,6 +48,10 @@ const MainRoutes: RouteObject[] = [
           {
             path: "search",
             element: <SearchResult />,
+          },
+          {
+            path: "wishlist",
+            element: <WishList />,
           },
         ],
       },

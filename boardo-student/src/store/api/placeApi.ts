@@ -10,9 +10,15 @@ const extendedApi = apiSlice.injectEndpoints({
     getPlaceById: builder.query<Place, string>({
       query: (id) => `/places/get-place/${id}`,
     }),
+    getWishList: builder.query<Place[], string>({
+      query: (email) => `/places/get-wishlist/${email}`,
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useLazyGetAllPlacesQuery, useLazyGetPlaceByIdQuery } =
-  extendedApi;
+export const {
+  useLazyGetAllPlacesQuery,
+  useLazyGetPlaceByIdQuery,
+  useLazyGetWishListQuery,
+} = extendedApi;
