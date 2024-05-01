@@ -23,17 +23,13 @@ import GoogleMap from "components/GoogleMap";
 import PlaceCard from "components/PlaceCard";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import theme from "themes";
-// import { useAppDispatch, useAppSelector } from "store/hooks";
 import {
   Coordinates,
   getUserLocationCoordinates,
   setUserLocationCoordinates,
 } from "store/userLocationSlice";
-import { getCountValue, increment } from "store/counterClice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoaderText } from "components/LoaderText";
-import Loader from "components/ui-component/Loader";
 import { Place } from "data/dataModels";
 
 setKey(process.env.REACT_APP_GOOGLE_API_KEY!); //AIzaSyCjMc0oT2ZkiOh2-DuvmBE4tjazA7Av39M

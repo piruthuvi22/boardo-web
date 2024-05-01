@@ -5,7 +5,7 @@ import { CssBaseline, StyledEngineProvider } from "@mui/material";
 import Routes from "./routes/MainRoutes";
 
 // defaultTheme
-import themes from "./themes";
+import themes from "./themes/theme";
 
 // project imports
 import NavigationScroll from "./layout/NavigationScroll";

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "./index";
+import { RootState } from "./store";
 
 export type Coordinates = {
   latitude: number;
