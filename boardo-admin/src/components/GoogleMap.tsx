@@ -129,7 +129,7 @@ function MyComponent({
               }
           : initialCenter
       }
-      zoom={selectedPlace ? 18 : 16}
+      zoom={selectedPlace ? 18 : 10}
       onLoad={(map) => setMap(map)}
       onUnmount={() => setMap(undefined)}
       options={{}}
