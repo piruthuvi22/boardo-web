@@ -49,6 +49,21 @@ export const menuItems = {
       ],
     },
     {
+      id: "reservation",
+      title: "Reservation",
+      type: "group",
+      children: [
+        {
+          id: "reservation",
+          title: "Reservation",
+          type: "item",
+          url: "/app/reservation-request",
+          icon: AddHome,
+          breadcrumbs: false,
+        },
+      ],
+    },
+    {
       id: "profile",
       type: "group",
       children: [
