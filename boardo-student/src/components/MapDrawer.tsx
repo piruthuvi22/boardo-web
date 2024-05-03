@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Divider,
@@ -9,8 +10,6 @@ import {
   useTheme,
 } from "@mui/material";
 import GoogleMap from "./GoogleMap";
-
-import { useState } from "react";
 import { Place } from "data/dataModels";
 import PlaceSearch from "./PlaceSearch";
 import {
@@ -21,6 +20,7 @@ import {
   FormatAlignLeft,
   Route,
 } from "@mui/icons-material";
+import GenericDrawer from "./GenericDrawer";
 
 export default function MapDrawer({
   open,
@@ -29,7 +29,7 @@ export default function MapDrawer({
 }: {
   open: boolean;
   place: Place;
-  closeDrawer: () => () => void;
+  closeDrawer: () => void;
 }) {
   const theme = useTheme();
 
@@ -50,29 +50,12 @@ export default function MapDrawer({
 
   return (
     <>
-      <Drawer
-        open={open}
-        onClose={closeDrawer()}
-        anchor="right"
-        variant="temporary"
-        sx={{
-          "& .MuiDrawer-paper": {
-            width: "80%",
-            maxWidth: "80%",
-            height: "100%",
-            maxHeight: "100%",
-            [theme.breakpoints.up("md")]: {
-              width: "60%",
-              maxWidth: "60%",
-            },
-          },
-        }}
-      >
+      <GenericDrawer open={open} closeDrawer={closeDrawer} width="40%">
         <Box
           bgcolor={theme.palette.grey[50]}
           height={"100%"}
           width={"100%"}
-          p={"10px"}
+          p={"15px"}
           display={"flex"}
           flexDirection={"column"}
         >
@@ -130,7 +113,7 @@ export default function MapDrawer({
             travelMode={travelMode}
           />
         </Box>
-      </Drawer>
+      </GenericDrawer>
     </>
   );
 }

@@ -18,7 +18,10 @@ import {
   RequestType,
   OutputFormat,
 } from "react-geocode";
-import { useLazyGetAllPlacesQuery } from "store/api/placeApi";
+import {
+  useLazyGetAllPlacesQuery,
+  useLazyGetNearestPlacesQuery,
+} from "store/api/placeApi";
 import GoogleMap from "components/GoogleMap";
 import PlaceCard from "components/PlaceCard";
 import { useEffect, useState } from "react";
@@ -31,6 +34,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { LoaderText } from "components/LoaderText";
 import { Place } from "data/dataModels";
+import { getSearchPlaceData } from "store/searchSlice";
 
 setKey(process.env.REACT_APP_GOOGLE_API_KEY!); //AIzaSyCjMc0oT2ZkiOh2-DuvmBE4tjazA7Av39M
 setDefaults({
@@ -44,53 +48,90 @@ export default function SearchResult() {
   const matchDownLg = useMediaQuery(theme.breakpoints.down("lg"));
 
   const coordinates = useSelector(getUserLocationCoordinates);
+  const searchPlaceData = useSelector(getSearchPlaceData);
   const dispatch = useDispatch();
 
   const [
-    getAllPlaces,
-    { data: allPlaces, isLoading: isPlacesLoading, isError: isPlacesError },
-  ] = useLazyGetAllPlacesQuery();
+    getNearestPlaces,
+    {
+      data: allPlaces,
+      isFetching,
+      isLoading: isPlacesLoading,
+      isError: isPlacesError,
+    },
+  ] = useLazyGetNearestPlacesQuery();
 
   const [selectedPlace, setSelectedPlace] = useState<Place | undefined>();
+  const [address, setAddress] = useState<string | undefined>();
+
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition((position) => {
+  //     dispatch(setUserLocationCoordinates(position.coords));
+  //   });
+  // }, [dispatch]);
+
+  // console.log("coordinates", coordinates);
+
+  // useEffect(() => {
+  //   getAddress(coordinates);
+  //   getNearestPlaces({ ...coordinates, radius: 30000 });
+  // }, [getNearestPlaces, coordinates]);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      dispatch(setUserLocationCoordinates(position.coords));
+    getNearestPlaces({
+      latitude: searchPlaceData.latitude,
+      longitude: searchPlaceData.longitude,
+      radius: searchPlaceData.radius!,
     });
-  }, [dispatch]);
+    setAddress(searchPlaceData.address);
+  }, [getNearestPlaces, searchPlaceData]);
 
-  useEffect(() => {
-    getAddress(coordinates);
-    getAllPlaces(coordinates);
-  }, [getAllPlaces, coordinates]);
-
-  const getAddress = async (coordinates: Coordinates) => {
-    console.log("aaa");
-    let aa = { latitude: 6.7966944, longitude: 79.9002024 };
-    // Get address from latitude & longitude.
-    fromLatLng(6.7966944, 79.9002024)
-      .then(({ results }: { results: any }) => {
-        // const { lat, lng } = results[0].geometry.location;
-        console.log(results);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const onRetry = () => {
+    getNearestPlaces({
+      latitude: searchPlaceData.latitude,
+      longitude: searchPlaceData.longitude,
+      radius: searchPlaceData.radius!,
+    });
   };
-
-  if (isPlacesLoading) {
+  const getAddress = async (coordinates: Coordinates) => {
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode(
+      {
+        location: { lat: coordinates.latitude, lng: coordinates.longitude },
+      },
+      (results, status) => {
+        if (status === "OK") {
+          results?.length && setAddress(results[0].formatted_address);
+        } else {
+          console.error(
+            "Geocode was not successful for the following reason: " + status
+          );
+        }
+      }
+    );
+  };
+  if (isPlacesError) {
+    return (
+      <LoaderText
+        isNotFound
+        message="No places found for the given location"
+        onRetry={onRetry}
+      />
+    );
+  }
+  if (isFetching) {
     return <LoaderText isLoading />;
   } else if ((allPlaces?.length ?? 0) > 0) {
     return (
       <>
         <Box height={"80px"} py={"10px"}>
-          <Typography variant="body1">
+          <Typography variant="body2">
             Accommodations near{" "}
-            <span style={{ fontWeight: "700" }}>University of Moratuwa</span>
+            <span style={{ fontWeight: "600" }}>{address && address}</span>
           </Typography>
           <Typography variant="body1">
             Showing{" "}
-            <span style={{ fontWeight: "700" }}>{allPlaces?.length}</span>{" "}
+            <span style={{ fontWeight: "600" }}>{allPlaces?.length}</span>{" "}
             places
           </Typography>
         </Box>
@@ -130,6 +171,11 @@ export default function SearchResult() {
       </>
     );
   } else {
-    return <LoaderText isNotFound onRetry={() => getAllPlaces(coordinates)} />;
+    return (
+      <LoaderText
+        isNotFound
+        onRetry={() => getNearestPlaces({ ...coordinates, radius: 5000 })}
+      />
+    );
   }
 }

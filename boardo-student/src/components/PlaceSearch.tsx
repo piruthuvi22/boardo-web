@@ -5,12 +5,17 @@ import { TextField2 } from "components/ui-component/customizedComponents";
 import { DistanceMatrixService } from "@react-google-maps/api";
 
 export default function PlaceSearch({
+  isLabelHidden = false,
+  label = "Search for a place..",
+  placeHolder = "Search for a place..",
   style,
   onPlaceSelected,
 }: {
+  isLabelHidden?: boolean;
+  label?: string;
+  placeHolder?: string;
   style?: React.CSSProperties; // Define prop type for styles
-
-  onPlaceSelected: (placeDetails: any) => void;
+  onPlaceSelected: (placeDetails: google.maps.places.PlaceResult) => void;
 }) {
   const {
     placesService,
@@ -34,13 +39,15 @@ export default function PlaceSearch({
 
   return (
     <div className="eag-mb-20" style={{ alignSelf: "flex-end" }}>
-      <Typography
-        variant="subtitle1"
-        sx={{ fontSize: 14 }}
-        // pb={2}
-      >
-        View Distance from
-      </Typography>
+      {!isLabelHidden && (
+        <Typography
+          variant="subtitle1"
+          sx={{ fontSize: 14 }}
+          // pb={2}
+        >
+          View Distance from
+        </Typography>
+      )}
       <TextField2
         sx={{
           ...style,
@@ -49,7 +56,7 @@ export default function PlaceSearch({
           },
         }}
         size="small"
-        placeholder="Search for a place.."
+        placeholder={placeHolder}
         value={search}
         onChange={(e) => {
           setShow(true);
@@ -65,8 +72,7 @@ export default function PlaceSearch({
       {show && !isPlacePredictionsLoading && (
         <List
           sx={{
-            width: "100%",
-            maxWidth: 360,
+            width: "400px",
             bgcolor: "background.paper",
             position: "absolute",
             zIndex: "1000 !important",
@@ -83,17 +89,17 @@ export default function PlaceSearch({
               sx={{
                 cursor: "pointer",
                 "&:hover": { background: "#f5f5f5" },
-                py: "0px",
+                py: "5px",
               }}
               onClick={() => {
                 placesService?.getDetails(
                   { placeId: item.place_id },
                   (placeDetails) => {
-                    onPlaceSelected(placeDetails);
                     setSearch(placeDetails?.name!);
+                    onPlaceSelected(placeDetails!);
+                    setShow(false);
                   }
                 );
-                setShow(false);
               }}
             >
               <ListItemText

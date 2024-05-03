@@ -1,8 +1,8 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useLazyGetWishListQuery } from "store/api/placeApi";
 import PlaceCard from "components/PlaceCard";
 import { useEffect } from "react";
 import { LoaderText } from "components/LoaderText";
+import { useLazyGetWishListQuery } from "store/api/wishlistApi";
 
 export default function WishList() {
   const theme = useTheme();

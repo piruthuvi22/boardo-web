@@ -1,14 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   DirectionsRenderer,
   GoogleMap,
   InfoWindow,
+  InfoWindowF,
   Marker,
   useJsApiLoader,
 } from "@react-google-maps/api";
 import { Place } from "data/dataModels";
 import { APIProvider, Map, useMap } from "@vis.gl/react-google-maps";
-import { Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 
 const containerStyle = {
   width: "100%",
@@ -43,8 +44,13 @@ function MyComponent({
       lng: 0,
     }
   );
+
+  const [zoom, setZoom] = useState<number | undefined>(10);
+
   const [directionsResponse, setDirectionsResponse] =
     useState<google.maps.DirectionsResult>();
+
+  const onLoad = useCallback((map: google.maps.Map) => setMap(map), []);
 
   useEffect(() => {
     // Only execute once when the map is loaded
@@ -60,6 +66,18 @@ function MyComponent({
     }
   }, [isLoaded, map, placeFrom, travelMode]);
 
+  useEffect(() => {
+    if (selectedPlace) {
+      map?.panTo({
+        lat: selectedPlace.coordinates.latitude,
+        lng: selectedPlace.coordinates.longitude,
+      });
+    } else {
+      map?.panTo(initialCenter);
+      map?.setZoom(zoom!)
+    }
+  }, [selectedPlace]);
+
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading...</div>;
 
@@ -71,8 +89,10 @@ function MyComponent({
         lng: palce.coordinates?.longitude,
       });
     });
-    map?.fitBounds(bounds);
-
+    map?.fitBounds(bounds, 0);
+    // map?.moveCamera({ center: bounds.getCenter(), zoom: 10 });
+    const zoomLev: number | undefined = map?.getZoom();
+    setZoom(zoomLev);
     setInitialCenter({
       lat: bounds?.getCenter()?.lat() ?? 0,
       lng: bounds?.getCenter()?.lng() ?? 0,
@@ -119,54 +139,55 @@ function MyComponent({
     <GoogleMap
       // ref={}
       mapContainerStyle={containerStyle}
-      center={
-        selectedPlace
-          ? placeFrom
-            ? initialCenter
-            : {
-                lat: selectedPlace.coordinates?.latitude,
-                lng: selectedPlace.coordinates?.longitude,
-              }
-          : initialCenter
-      }
-      zoom={selectedPlace ? 18 : 10}
-      onLoad={(map) => setMap(map)}
+      center={initialCenter}
+      zoom={zoom}
+      onLoad={onLoad}
       onUnmount={() => setMap(undefined)}
       options={{}}
     >
       {selectedPlace && (
-        <InfoWindow
+        <InfoWindowF
           position={{
             lat: selectedPlace.coordinates?.latitude,
             lng: selectedPlace.coordinates?.longitude,
           }}
           options={{
             pixelOffset: new window.google.maps.Size(0, -50),
+            disableAutoPan: true,
+            minWidth: 200,
           }}
         >
-          <div>
-            <Typography variant="subtitle1">{selectedPlace.name}</Typography>
-            <Typography variant="subtitle2">
-              {selectedPlace.cost} LKR
-            </Typography>
-          </div>
-        </InfoWindow>
+          <Box display={"flex"}>
+            <img
+              src={selectedPlace.imageUrls[0].url}
+              style={{ height: "40px", objectFit: "cover" }}
+            />
+            <Box pl={1}>
+              <Typography variant="subtitle2">{selectedPlace.name}</Typography>
+              <Typography variant="subtitle2">
+                {selectedPlace.cost} LKR
+              </Typography>
+            </Box>
+          </Box>
+        </InfoWindowF>
       )}
       {placeFrom?.lat && (
-        <InfoWindow
+        <InfoWindowF
           position={{
             lat: placeFrom.lat,
             lng: placeFrom.lng,
           }}
           options={{
             pixelOffset: new window.google.maps.Size(0, -50),
+            disableAutoPan: true,
+            minWidth: 200,
           }}
         >
-          <div>
-            <Typography variant="subtitle1">{placeFrom.name}</Typography>
+          <Box p={1}>
+            <Typography variant="subtitle2">{placeFrom.name}</Typography>
             <Typography variant="subtitle2">{placeFrom.address}</Typography>
-          </div>
-        </InfoWindow>
+          </Box>
+        </InfoWindowF>
       )}
       <>
         {placeFrom?.lat && (
