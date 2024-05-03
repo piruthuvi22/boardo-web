@@ -114,3 +114,12 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: #ccc;
 }
+
+.gm-ui-hover-effect {
+  display: none !important;
+}
+.gm-style-iw-c,
+.gm-style-iw-d {
+  padding: 0 !important;
+  overflow: auto !important;
+}

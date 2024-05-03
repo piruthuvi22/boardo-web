@@ -43,3 +43,30 @@ export interface User {
   district?: string;
 }
 
+export interface Feedback {
+  _id?: string;
+  email: string;
+  placeId: string;
+  userName: string;
+  userImage: string;
+  timestamp: string;
+  rating: number;
+  comment: string;
+}
+
+export interface Reservation {
+  _id?: string;
+  adminId?: string;
+  userId: string;
+  placeId: string;
+  checkIn: string;
+  checkOut: string;
+  noOfGuests: number;
+}
+
+export interface ReservationsDateRange {
+  _id: string;
+  placeId: string;
+  checkIn: string;
+  checkOut: string;
+}

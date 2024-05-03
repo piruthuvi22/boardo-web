@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 
 // project imports
-import SearchSection from "./SearchSection";
 import ProfileSection from "./ProfileSection";
 
 // assets
@@ -25,8 +24,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Replay } from "@mui/icons-material";
 
-import auth from "../../../config/firebase"
+import auth from "../../../config/firebase";
 import { useNavigate } from "react-router";
+import PlaceSearch from "components/PlaceSearch";
+import { setSearchPlaceData } from "store/searchSlice";
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -57,9 +58,8 @@ const Header = ({
     });
   };
 
-
   return (
-    <>
+    <Box display={"flex"} gap={2} width={"100%"}>
       {/* logo & toggler button */}
       <Box
         sx={{
@@ -68,10 +68,12 @@ const Header = ({
           [theme.breakpoints.down("md")]: {
             width: "auto",
           },
-        }}>
+        }}
+      >
         <Box
           component="span"
-          sx={{ display: { xs: "none", lg: "block" }, flexGrow: 1 }}>
+          sx={{ display: { xs: "none", lg: "block" }, flexGrow: 1 }}
+        >
           <Logo />
         </Box>
         <ButtonBase sx={{ borderRadius: "12px", overflow: "hidden" }}>
@@ -87,30 +89,41 @@ const Header = ({
               },
             }}
             onClick={handleLeftDrawerToggle}
-            color="inherit">
+            color="inherit"
+          >
             <IconMenu2 stroke={1.5} size="1.3rem" />
           </Avatar>
         </ButtonBase>
       </Box>
 
       {/* header search */}
-      <SearchSection />
-      <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
-        {/* <Typography>Hello</Typography> */}
+      <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", gap: 1 }}>
+        <PlaceSearch
+          onPlaceSelected={(place) => {
+            dispatch(
+              setSearchPlaceData({
+                latitude: place.geometry?.location?.lat()!,
+                longitude: place.geometry?.location?.lng()!,
+                placeName: place.name!,
+                address: place.formatted_address!,
+                radius: 5000,
+              })
+            );
+          }}
+          isLabelHidden
+          style={{ width: "400px" }}
+        />
         <IconButton size="small" color="secondary" onClick={setLocation}>
           <Replay />
         </IconButton>
       </Box>
-      <Box sx={{ flexGrow: 1 }} />
 
       {/* <ProfileSection /> */}
 
       <Box>
-        <Button
-        onClick={handleLogout}
-        >Log out</Button>
+        <Button onClick={handleLogout}>Log out</Button>
       </Box>
-    </>
+    </Box>
   );
 };
 

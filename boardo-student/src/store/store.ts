@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import customizationReducer from "./customizationReducer";
 import { apiSlice } from "store/api/apiSlice";
 import userDataSlice from "./userLocationSlice";
+import searchPlaceSlice from "./searchSlice";
 
 // ==============================|| REDUX - MAIN STORE ||============================== //
 
@@ -9,6 +10,7 @@ export const store = configureStore({
   reducer: {
     customization: customizationReducer,
     userLocation: userDataSlice,
+    searchPlace: searchPlaceSlice,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
