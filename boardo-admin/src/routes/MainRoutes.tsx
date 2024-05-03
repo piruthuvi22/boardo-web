@@ -4,6 +4,7 @@ import { RouteObject, useRoutes } from "react-router-dom";
 // project imports
 import MainLayout from "layout/MainLayout/MainLayout";
 import Loadable from "components/ui-component/Loadable";
+import ReservationRequest from "views/reservations/ReservationRequests";
 
 // dashboard routing
 const Login = Loadable(lazy(() => import("views/auth/Login")));
@@ -49,6 +50,10 @@ const MainRoutes: RouteObject[] = [
             element: <Place />,
           },
         ],
+      },
+      {
+        path: "reservation-request",
+        element: <ReservationRequest />,
       },
       {
         path: "profile",

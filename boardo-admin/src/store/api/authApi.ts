@@ -11,7 +11,7 @@ const extendedApi = apiSlice.injectEndpoints({
         body: user,
       }),
     }),
-    updateProfile: builder.mutation<boolean, User>({
+    updateProfile: builder.mutation<User, User>({
       query: (user) => ({
         url: "/users/update-profile",
         method: "PUT",

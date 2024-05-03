@@ -29,7 +29,7 @@ export function LoaderText({
       {isError && (
         <>
           <Typography>{message}</Typography>
-          <Button variant="contained" onClick={onRetry}>
+          <Button variant="text" onClick={onRetry}>
             Retry
           </Button>
         </>

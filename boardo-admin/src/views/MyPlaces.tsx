@@ -90,7 +90,9 @@ export default function MyPlaces() {
     setEditPlace(place);
     setOpenDrawer(true);
   };
-
+if(isPlacesError){
+  return <LoaderText message="Something went wrong" isError onRetry={()=>getAllPlaces(coordinates)} />
+}
   if (isPlacesLoading) {
     return <LoaderText isLoading />;
   } else if ((allPlaces?.length ?? 0) > 0) {

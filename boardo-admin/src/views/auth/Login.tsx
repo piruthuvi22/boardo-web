@@ -22,6 +22,9 @@ import { z } from "zod";
 
 import auth from "../../config/firebase";
 import { toast } from "react-toastify";
+import { useLazyGetUserByEmailQuery } from "store/api/authApi";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "store/userInfo";
 
 interface Inputs {
   email: string;
@@ -53,15 +56,25 @@ export default function Login() {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const watchEmail = watch("email");
   const watchPassword = watch("password");
+
+  const [getUserByEmail] = useLazyGetUserByEmailQuery();
 
   const onSubmit = () => {
     signInWithEmailAndPassword(auth, watchEmail, watchPassword)
       .then((userCredential) => {
         const user = userCredential.user;
         if (user.emailVerified) {
+          getUserByEmail({ email: user.email!, userRole: "ADMIN" }).then(
+            (res) => {
+              console.log("UserInfo", res);
+              dispatch(setUserInfo(res.data!));
+              localStorage.setItem("userInfo", JSON.stringify(res.data!));
+            }
+          );
           toast.success("Sign in successful");
           navigate("/app/dashboard");
         } else {
@@ -80,7 +93,9 @@ export default function Login() {
   const handleForgetPassword = () => {
     sendPasswordResetEmail(auth, watchEmail)
       .then(() => {
-        toast.success("Password reset email sent to your email address. Please check your email.");
+        toast.success(
+          "Password reset email sent to your email address. Please check your email."
+        );
         navigate("/auth/login");
       })
       .catch((error) => {
@@ -91,7 +106,7 @@ export default function Login() {
         toast.error(finalMessage);
       });
   };
-  
+
   const provider = new GoogleAuthProvider();
 
   const handleGoogleSignIn = () => {
@@ -127,8 +142,7 @@ export default function Login() {
           t.palette.mode === "light" ? t.palette.grey[50] : t.palette.grey[900],
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}
-    >
+      }}>
       <Grid item xs={false} sm={4} md={7}></Grid>
       <Grid item xs={12} sm={8} md={5} className="glass">
         <Box
@@ -138,8 +152,7 @@ export default function Login() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -149,8 +162,7 @@ export default function Login() {
           <Box
             component={"form"}
             onSubmit={handleSubmit(onSubmit)}
-            sx={{ mt: 1 }}
-          >
+            sx={{ mt: 1 }}>
             <TextField2
               size="small"
               margin="normal"
@@ -177,8 +189,7 @@ export default function Login() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+              sx={{ mt: 3, mb: 2 }}>
               Sign In
             </Button>
             <Grid container>
@@ -210,7 +221,7 @@ export default function Login() {
               <img
                 src="https://unifysolutions.net/supportedproduct/google-signin/Google__G__Logo.svg"
                 alt="google"
-                style={{ width: "20px", height: "20px" , marginRight: "8px"}}
+                style={{ width: "20px", height: "20px", marginRight: "8px" }}
               />
               Sign In with Google
             </Button>

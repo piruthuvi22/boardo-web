@@ -34,6 +34,7 @@ export interface Position {
 }
 
 export interface User {
+  _id?:string;
   email: string;
   firstName: string;
   lastName: string;
@@ -41,4 +42,17 @@ export interface User {
   phoneNumber?: string;
   province?: string;
   district?: string;
+}
+
+export interface Reservation {
+  _id: string;
+  placeName: string;
+  placeUrl: string;
+  studentName: string;
+  adminName: string;
+  checkIn: string;
+  checkOut: string;
+  noOfGuests: number;
+  status: Status;
+  timestamp: string;
 }

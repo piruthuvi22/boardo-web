@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
-import { Autocomplete, Avatar, Box, Button, Divider, Paper, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { TextField2 } from "components/ui-component/customizedComponents";
 import auth from "../../config/firebase";
 import {
@@ -20,6 +30,7 @@ import {
   useLazyGetUserByEmailQuery,
   useUpdateProfileMutation,
 } from "store/api/authApi";
+import { User } from "data/dataModels";
 
 interface InputsProfile {
   firstName: string;
@@ -147,27 +158,23 @@ const Profile = () => {
     }
   }, [watchProvince, setValue]);
 
-  const [getUserByEmail, { data: userDetails }] = useLazyGetUserByEmailQuery();
-
+  const [userDetails, setUserDetails] = useState<User>();
   useEffect(() => {
-    if (userInfo) {
-      const email = userInfo.email!;
-      const userRole = "ADMIN";
-      getUserByEmail({ email, userRole })
-      .unwrap()
-      .then((res) => {
-        const name = userInfo.displayName?.split(" ");
-        setValue("firstName", name ? name[0] : res?.firstName || "");
-        setValue("lastName", name ? name[1] : res?.lastName || "");
-        setValue(
-          "phoneNumber",
-          userInfo.providerData[0].phoneNumber ||
-            res?.phoneNumber ||
-            ""
-        );
-        setValue("province", res?.province || null);
-        setValue("district", res?.district || null);
-      });
+    const response = localStorage.getItem("userInfo");
+    const res = JSON.parse(response!);
+    setUserDetails(res);
+    
+    if (userInfo && res) {
+      console.log("User Info from local storage", res);
+      const name = userInfo.displayName?.split(" ");
+      setValue("firstName", name ? name[0] : res?.firstName || "");
+      setValue("lastName", name ? name[1] : res?.lastName || "");
+      setValue(
+        "phoneNumber",
+        userInfo.providerData[0].phoneNumber || res?.phoneNumber || ""
+      );
+      setValue("province", res?.province || null);
+      setValue("district", res?.district || null);
     }
   }, [userInfo, setValue]);
 
@@ -264,7 +271,7 @@ const Profile = () => {
       <Box>
         <Box display={"flex"} alignItems={"center"} gap={2}>
           <Avatar
-            alt={userInfo?.displayName || userDetails?.firstName || "User"}
+            alt={userInfo?.displayName || userDetails?.firstName! || "User"}
             src={userInfo?.providerData[0].photoURL || ""}
             sx={{ width: 56, height: 56 }}
           />
