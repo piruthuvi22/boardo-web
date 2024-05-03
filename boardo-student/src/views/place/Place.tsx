@@ -1,6 +1,7 @@
 import {
   AccessTime,
   Bathtub,
+  CheckCircle,
   Hotel,
   LocationOn,
   Map,
@@ -14,13 +15,20 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Paper,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { IconMinusVertical } from "@tabler/icons-react";
+import CommentSection from "components/Comment";
+import CreateFeedback from "components/CreateFeedback";
 import ImageCarousel from "components/ImageCarousel";
 import { LoaderText } from "components/LoaderText";
 import MapDrawer from "components/MapDrawer";
@@ -29,6 +37,10 @@ import { usePlacesWidget } from "react-google-autocomplete";
 import { useLocation } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import { useLazyGetPlaceByIdQuery } from "store/api/placeApi";
+import NearbyPlaces from "components/NearbyPlaces";
+import Enquiry from "components/Enquiry";
+import { useLazyGetReservationsDateRangeQuery } from "store/api/reservationApi";
+import moment from "moment";
 
 const Place = () => {
   const theme = useTheme();
@@ -43,17 +55,32 @@ const Place = () => {
     { data: place, isLoading: isPlaceLoading, isError: isPlaceError },
   ] = useLazyGetPlaceByIdQuery();
 
-  const { ref } = usePlacesWidget({
-    apiKey: `${process.env.REACT_APP_GOOGLE_API_KEY!}`,
-    onPlaceSelected: (place) => console.log(place),
-  });
+  const [
+    getReservationsDateRange,
+    {
+      data: reservationsDateRange,
+      isLoading: isReservationsLoading,
+      isError: isReservationsError,
+    },
+  ] = useLazyGetReservationsDateRangeQuery();
+
+  // const { ref } = usePlacesWidget({
+  //   apiKey: `${process.env.REACT_APP_GOOGLE_API_KEY!}`,
+  //   onPlaceSelected: (place) => console.log(place),
+  // });
 
   const [openMapDrawer, setOpenMapDrawer] = useState(false);
+  const [openEnquiryDrawer, setOpenEnquiryDrawer] = useState(false);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     getPlace(placeId);
   }, []);
+
+  const handleEnquiry = (placeId: string) => {
+    getReservationsDateRange(placeId);
+  };
+
   if (isPlaceLoading) {
     return <LoaderText isLoading />;
   } else if (place?._id)
@@ -62,7 +89,6 @@ const Place = () => {
         <Box className="container">
           <Box className="scrollable-section" pr={matchDownLg ? 0 : "10px"}>
             {/* Image and title */}
-
             <Paper variant="outlined" sx={{ padding: "15px" }}>
               <Box display={"flex"} flexDirection={"column"} gap={1}>
                 <Box sx={{}}>
@@ -151,7 +177,6 @@ const Place = () => {
                 </Box>
               </Box>
             </Paper>
-
             {/* Description */}
             <Paper variant="outlined" sx={{ padding: "15px", mt: "15px" }}>
               <Typography variant="h5" py={"15px"}>
@@ -162,9 +187,7 @@ const Place = () => {
                 {place.description}
               </Typography>
             </Paper>
-
             {/* What will you get? */}
-
             <Paper variant="outlined" sx={{ padding: "15px", mt: "15px" }}>
               <Typography variant="h5" py={"15px"}>
                 What will you get?
@@ -182,6 +205,25 @@ const Place = () => {
                 ))}
               </Box>
             </Paper>
+
+            {/* Nearby Places */}
+            <NearbyPlaces placeCoordinate={place.coordinates} />
+
+            {/* Reviews */}
+            <Paper variant="outlined" sx={{ padding: "15px", mt: "15px" }}>
+              <Typography variant="h5" py={"15px"}>
+                Reviews
+              </Typography>
+              <Divider />
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                gap={2}
+                mt={"15px"}
+              >
+                <CommentSection />
+              </Box>
+            </Paper>
           </Box>
           <Box
             className="non-scrollable-section"
@@ -192,6 +234,7 @@ const Place = () => {
               component={Paper}
               sx={{
                 padding: "10px",
+                mb: "10px",
               }}
               display="flex"
               flexDirection="column"
@@ -203,39 +246,83 @@ const Place = () => {
                   id="panel1-header"
                   sx={styles.accordion}
                 >
-                  <Button variant="contained" fullWidth>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={() => handleEnquiry(place._id)}
+                  >
                     Enquiry
                   </Button>
                 </AccordionSummary>
                 <AccordionDetails sx={{ paddingX: 0 }}>
-                  <Box display={"flex"}>
-                    <Typography variant="subtitle1">Enquiry</Typography>
-                    <Typography variant="subtitle1">Enquiry</Typography>
-                  </Box>
+                  {isReservationsLoading ? (
+                    <Box display={"flex"} justifyContent={"center"}>
+                      <CircularProgress size={20} thickness={2} />
+                    </Box>
+                  ) : (
+                    <List dense={true}>
+                      <ListItem>
+                        <ListItemText
+                          primary="Reservations"
+                          secondary="You can not reserve this place on these dates."
+                        />
+                      </ListItem>
+                      {reservationsDateRange?.map((item) => (
+                        <ListItem key={item._id}>
+                          <ListItemIcon>
+                            <CheckCircle color="success" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={
+                              <Typography
+                                variant="subtitle2"
+                                display={"flex"}
+                                justifyContent={"space-between"}
+                              >
+                                <span
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                  }}
+                                >
+                                  <span style={{ fontSize: "12px" }}>From</span>
+                                  {moment(item.checkIn).format("YYYY-MM-DD")}
+                                </span>
+                                <span
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                  }}
+                                >
+                                  <span style={{ fontSize: "12px" }}>To</span>
+                                  {moment(item.checkOut).format("YYYY-MM-DD")}
+                                </span>
+                              </Typography>
+                            }
+                          />
+                        </ListItem>
+                      ))}
+                      <Button
+                        variant="text"
+                        fullWidth
+                        onClick={() => setOpenEnquiryDrawer(true)}
+                      >
+                        Enquire Now
+                      </Button>
+                    </List>
+                  )}
                 </AccordionDetails>
               </Accordion>
-              <Accordion
-                sx={{
-                  "::before": {
-                    display: "none",
-                  },
-                }}
-              >
-                <AccordionSummary
-                  aria-controls="panel2-content"
-                  id="panel2-header"
-                  sx={styles.accordion}
-                >
-                  <Button variant="outlined" fullWidth>
-                    Enquiry
-                  </Button>
-                </AccordionSummary>
-                <AccordionDetails sx={{ paddingX: 0 }}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </AccordionDetails>
-              </Accordion>
+            </Box>
+
+            <Box
+              component={Paper}
+              sx={{
+                padding: "10px",
+                mb: "10px",
+              }}
+            >
+              <CreateFeedback placeId="6632779317bbb8ce68307643" />
             </Box>
           </Box>
         </Box>
@@ -243,8 +330,16 @@ const Place = () => {
         <MapDrawer
           open={openMapDrawer}
           place={place}
-          closeDrawer={() => () => {
+          closeDrawer={() => {
             setOpenMapDrawer(false);
+          }}
+        />
+
+        <Enquiry
+          place={place}
+          open={openEnquiryDrawer}
+          closeDrawer={() => {
+            setOpenEnquiryDrawer(false);
           }}
         />
       </>

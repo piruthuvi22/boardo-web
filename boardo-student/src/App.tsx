@@ -14,6 +14,7 @@ import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUserLocationCoordinates } from "store/userLocationSlice";
+import { setSearchPlaceData } from "store/searchSlice";
 
 // ==============================|| APP ||============================== //
 
@@ -26,6 +27,15 @@ const App = () => {
         setUserLocationCoordinates({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+        })
+      );
+      dispatch(
+        setSearchPlaceData({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          address: "your location",
+          placeName: "Current Location",
+          radius: 35000,
         })
       );
     });
