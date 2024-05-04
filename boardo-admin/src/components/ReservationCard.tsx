@@ -4,21 +4,22 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import IconButton from "@mui/material/IconButton";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Typography from "@mui/material/Typography";
-import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import SkipNextIcon from "@mui/icons-material/SkipNext";
+import LockIcon from "@mui/icons-material/Lock";
+import ClearIcon from "@mui/icons-material/Clear";
 import { Paper } from "@mui/material";
 
 export default function ReservationCard({
   homeName,
   homeImage,
+  status,
   studentName,
   requestedTime,
 }: {
   homeName: string;
   homeImage: string;
+  status: string;
   studentName: string;
   requestedTime: string;
 }) {
@@ -34,7 +35,7 @@ export default function ReservationCard({
         "&:hover": {
           boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.1)",
           border: `1px solid ${theme.palette.primary.light}`,
-          transform: "scale(1.003)",
+          // transform: "scale(1.003)",
           transition: "all 0.3s ease-in-out",
         },
       }}>
@@ -49,17 +50,23 @@ export default function ReservationCard({
             <Typography component="div" variant="h5">
               {homeName}
             </Typography>
-            <Typography
-              variant="subtitle1"
-              color="text.secondary"
-              component="div">
-              {studentName}
-            </Typography>
+            <Box display={"flex"} alignItems={"center"} gap={1}>
+              <Typography variant="subtitle1" color="text.secondary">
+                {studentName}
+              </Typography>
+              {status === "PENDING" ? (
+                <LockOpenIcon sx={{ fontSize: "16px" }} color="primary" />
+              ) : status === "ACCEPTED" ? (
+                <LockIcon sx={{ fontSize: "16px" }} color="success" />
+              ) : (
+                <ClearIcon sx={{ fontSize: "16px" }} color="error" />
+              )}
+            </Box>
             <Typography
               variant="subtitle1"
               color={theme.palette.grey[400]}
               component="div"
-              sx={{ mt: "18px" }}>
+              sx={{ mt: 2 }}>
               {requestedTime}
             </Typography>
           </CardContent>

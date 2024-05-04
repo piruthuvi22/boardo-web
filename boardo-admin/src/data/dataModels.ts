@@ -54,5 +54,6 @@ export interface Reservation {
   checkOut: string;
   noOfGuests: number;
   status: Status;
+  message: string;
   timestamp: string;
 }

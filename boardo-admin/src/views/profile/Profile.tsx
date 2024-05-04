@@ -162,19 +162,19 @@ const Profile = () => {
   useEffect(() => {
     const response = localStorage.getItem("userInfo");
     const res = JSON.parse(response!);
-    setUserDetails(res);
+    setUserDetails(res.data);
     
     if (userInfo && res) {
       console.log("User Info from local storage", res);
       const name = userInfo.displayName?.split(" ");
-      setValue("firstName", name ? name[0] : res?.firstName || "");
-      setValue("lastName", name ? name[1] : res?.lastName || "");
+      setValue("firstName", name ? name[0] : res.data?.firstName || "");
+      setValue("lastName", name ? name[1] :  res.data?.lastName || "");
       setValue(
         "phoneNumber",
-        userInfo.providerData[0].phoneNumber || res?.phoneNumber || ""
+        userInfo.providerData[0].phoneNumber ||  res.data?.phoneNumber || ""
       );
-      setValue("province", res?.province || null);
-      setValue("district", res?.district || null);
+      setValue("province",  res.data?.province || null);
+      setValue("district",  res.data?.district || null);
     }
   }, [userInfo, setValue]);
 
@@ -196,6 +196,7 @@ const Profile = () => {
             district: data.district!,
           }).then((res) => {
             if (res) {
+              localStorage.setItem("userInfo", JSON.stringify(res));
               toast.success("Profile updated successfully");
               return;
             }
@@ -463,7 +464,6 @@ const Profile = () => {
                       <AlertDialog
                         open={open}
                         handleClose={() => setOpen(false)}
-                        buttonText="Delete Account"
                         dialogTitle="Are you sure you want to delete account?"
                         dialogContent="This action cannot be undone."
                         handleYes={handleDeleteAccount}
