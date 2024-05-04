@@ -9,14 +9,12 @@ import DialogTitle from "@mui/material/DialogTitle";
 export default function AlertDialog({
   open,
   handleClose,
-  buttonText,
   dialogTitle,
   dialogContent,
   handleYes,
 }: {
   open: boolean;
   handleClose: () => void;
-  buttonText: string;
   dialogTitle: string;
   dialogContent: string;
   handleYes: () => void;
