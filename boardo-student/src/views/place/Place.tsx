@@ -96,7 +96,7 @@ const Place = () => {
   useEffect(() => {
     getPlace(placeId);
     getStatus({ userId: "663527fd3e66c6dcce652b57", placeId });
-    getFeedbackOfUser("663527fd3e66c6dcce652b57");
+    getFeedbackOfUser({ userId: "663527fd3e66c6dcce652b57", placeId });
   }, []);
 
   const handleEnquiry = (placeId: string) => {
@@ -112,8 +112,8 @@ const Place = () => {
     setEditFeedback(feedback);
   };
 
-  console.log("userFeedback",userFeedback);
-  
+  console.log("userFeedback", userFeedback);
+
   if (isPlaceLoading) {
     return <LoaderText isLoading />;
   } else if (place?._id)
@@ -270,7 +270,7 @@ const Place = () => {
                 gap={2}
                 mt={"15px"}
               >
-                <CommentSection />
+                <CommentSection placeId={placeId} />
               </Box>
             </Paper>
           </Box>
@@ -375,7 +375,7 @@ const Place = () => {
                 }}
               >
                 <CreateFeedback
-                  placeId="6632779317bbb8ce68307643"
+                  placeId={placeId}
                   userFeedback={editFeedback}
                   onCancel={() => {
                     setOpenFeedback(false);

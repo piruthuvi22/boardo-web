@@ -8,12 +8,16 @@ interface FeedbackRespones extends Feedback {
 const extendedApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getFeedbacks: builder.query<Feedback[], string>({
-      query: (placeId) => `/feedback/get-feedback/${placeId}`,
+      query: (placeId) => `/feedback/get-feedback/place/${placeId}`,
       providesTags: ["Feedbacks"],
     }),
 
-    getFeedbackByUser: builder.query<Feedback, string>({
-      query: (userId) => `/feedback/get-feedback-by-user/${userId}`,
+    getFeedbackByUser: builder.query<
+      Feedback,
+      { userId: string; placeId: string }
+    >({
+      query: ({ userId, placeId }) =>
+        `/feedback/get-feedback/user/${userId}/place/${placeId}`,
       providesTags: ["Feedback"],
     }),
 
