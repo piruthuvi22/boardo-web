@@ -10,7 +10,7 @@ export default function ReservationRequest() {
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const [
     getReservations,
-    { isLoading, data: reservations, isFetching, isError, error },
+    { isLoading, data: reservations, isError, error },
   ] = useLazyGetReservationsQuery();
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
