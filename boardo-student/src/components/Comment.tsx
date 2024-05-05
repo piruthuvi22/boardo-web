@@ -17,11 +17,11 @@ import {
 import { Feedback } from "data/dataModels";
 import moment from "moment";
 
-export default function CommentSection() {
+export default function CommentSection({ placeId }: { placeId: string }) {
   const [getFeedbacks, { data: feedbacks }] = useLazyGetFeedbacksQuery();
 
   useEffect(() => {
-    getFeedbacks("6632779317bbb8ce68307643");
+    getFeedbacks(placeId);
   }, [getFeedbacks]);
 
   return (
