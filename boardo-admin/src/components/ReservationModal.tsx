@@ -2,6 +2,7 @@ import Dialog from "@mui/material/Dialog";
 import EventIcon from "@mui/icons-material/Event";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ClearIcon from "@mui/icons-material/Clear";
+import PhoneIcon from "@mui/icons-material/Phone";
 import {
   Box,
   Button,
@@ -24,6 +25,7 @@ export default function ReservationModal({
   checkOut,
   message,
   noOfGuests,
+  studentNumber,
 }: {
   open: boolean;
   handleClose: () => void;
@@ -33,6 +35,7 @@ export default function ReservationModal({
   checkOut: string;
   message: string;
   noOfGuests: number;
+  studentNumber: string;
 }) {
   const [updateStatus, { data: statusResponse, isError: statusUpdateError }] =
     useUpdateStatusMutation();
@@ -87,9 +90,19 @@ export default function ReservationModal({
               <Typography>{` Check-out: ${checkOut}`}</Typography>
             </Box>
           </Box>
-          <Box display="flex" alignItems="center" gap={1} sx={{ m: "10px" }}>
-            <PeopleAltIcon color="primary" />
-            <Typography>{`No of Guests: ${noOfGuests}`}</Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ m: "10px" }}>
+            <Box  display="flex" alignItems="center" gap={1}>
+              <PeopleAltIcon color="primary" />
+              <Typography>{`No of Guests: ${noOfGuests}`}</Typography>
+            </Box>
+            <Box display="flex" alignItems="center" gap={1}>
+              <PhoneIcon color="primary" />
+              <Typography>{`Student Number: ${studentNumber}`}</Typography>
+            </Box>
           </Box>
           <Paper variant="outlined" sx={{ p: 2 }}>
             <Typography variant="body1">{message}</Typography>
