@@ -6,6 +6,7 @@ import MainLayout from "layout/MainLayout/MainLayout";
 import Loadable from "components/ui-component/Loadable";
 import WishList from "views/wishlist/Wishlist";
 import Enquiries from "views/enquiries/MyEnquiries";
+import useUser from "hooks/useUser";
 
 // dashboard routing
 const Login = Loadable(lazy(() => import("views/auth/Login")));
@@ -69,5 +70,9 @@ const MainRoutes: RouteObject[] = [
 ];
 
 export default function ThemeRoutes() {
-  return useRoutes(MainRoutes);
+  const { userInfo } = useUser();
+
+  const routes = userInfo ? MainRoutes : MainRoutes.slice(0, 3);
+
+  return useRoutes(routes);
 }

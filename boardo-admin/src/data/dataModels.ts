@@ -49,10 +49,12 @@ export interface Reservation {
   placeName: string;
   placeUrl: string;
   studentName: string;
+  studentNumber: string;
   adminName: string;
   checkIn: string;
   checkOut: string;
   noOfGuests: number;
   status: Status;
+  message: string;
   timestamp: string;
 }

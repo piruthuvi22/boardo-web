@@ -9,7 +9,6 @@ import {
   Tab,
   Tabs,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { TextField2 } from "components/ui-component/customizedComponents";
 import auth from "../../config/firebase";
@@ -28,9 +27,10 @@ import { toast } from "react-toastify";
 import AlertDialog from "../../components/Alert";
 import useUser from "hooks/useUser";
 import {
-  useUpdateProfileMutation,
   useLazyGetUserByEmailQuery,
+  useUpdateProfileMutation,
 } from "store/api/authApi";
+import { User } from "data/dataModels";
 
 interface InputsProfile {
   firstName: string;
@@ -125,10 +125,7 @@ const Profile = () => {
   const watchDistrict = watchProfile("district");
 
   const watchCurrentPassword = watchAccount("currentPassword");
-  const watchNewPassword = watchAccount("newPassword");
-  const watchConfirmPassword = watchAccount("confirmPassword");
 
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const { userInfo } = useUser();
@@ -161,28 +158,23 @@ const Profile = () => {
     }
   }, [watchProvince, setValue]);
 
-  const [getUserByEmail, { data: userDetails }] = useLazyGetUserByEmailQuery();
-  console.log("userDetsails : ", userDetails);
-
+  const [userDetails, setUserDetails] = useState<User>();
   useEffect(() => {
-    if (userInfo) {
-      const email = userInfo.email!;
-      const userRole = "STUDENT";
-      getUserByEmail({ email, userRole })
-        .unwrap()
-        .then((res) => {
-          const name = userInfo.displayName?.split(" ");
-          setValue("firstName", name ? name[0] : res?.firstName || "");
-          setValue("lastName", name ? name[1] : res?.lastName || "");
-          setValue(
-            "phoneNumber",
-            userInfo.providerData[0].phoneNumber ||
-              res?.phoneNumber ||
-              ""
-          );
-          setValue("province", res?.province || null);
-          setValue("district", res?.district || null);
-        });
+    const response = localStorage.getItem("userInfo");
+    const res = JSON.parse(response!);
+    setUserDetails(res.data);
+    
+    if (userInfo && res) {
+      console.log("User Info from local storage", res);
+      const name = userInfo.displayName?.split(" ");
+      setValue("firstName", name ? name[0] : res.data?.firstName ||res?.firstName|| "");
+      setValue("lastName", name ? name[1] :  res.data?.lastName || res?.lastName || "");
+      setValue(
+        "phoneNumber",
+        userInfo.providerData[0].phoneNumber ||  res.data?.phoneNumber ||res?.phoneNumber|| ""
+      );
+      setValue("province",  res.data?.province || res?.province || null);
+      setValue("district",  res.data?.district || res?.district || null);
     }
   }, [userInfo, setValue]);
 
@@ -203,8 +195,8 @@ const Profile = () => {
             province: data.province!,
             district: data.district!,
           }).then((res) => {
-            console.log(res);
             if (res) {
+              localStorage.setItem("userInfo", JSON.stringify(res));
               toast.success("Profile updated successfully");
               return;
             }
@@ -280,7 +272,7 @@ const Profile = () => {
       <Box>
         <Box display={"flex"} alignItems={"center"} gap={2}>
           <Avatar
-            alt={userInfo?.displayName || userDetails?.firstName || "User"}
+            alt={userInfo?.displayName || userDetails?.firstName! || "User"}
             src={userInfo?.providerData[0].photoURL || ""}
             sx={{ width: 56, height: 56 }}
           />
@@ -472,7 +464,6 @@ const Profile = () => {
                       <AlertDialog
                         open={open}
                         handleClose={() => setOpen(false)}
-                        buttonText="Delete Account"
                         dialogTitle="Are you sure you want to delete account?"
                         dialogContent="This action cannot be undone."
                         handleYes={handleDeleteAccount}

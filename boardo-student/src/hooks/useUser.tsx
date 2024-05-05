@@ -10,7 +10,6 @@ const useUser = () => {
       if (user) {
         setUserInfo(user);
       } else {
-        // User is signed out
         setUserInfo(null);
       }
     });
