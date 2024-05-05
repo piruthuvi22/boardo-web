@@ -7,8 +7,13 @@ interface FeedbackRespones extends Feedback {
 }
 const extendedApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getWishList: builder.query<Feedback[], string>({
+    getFeedbacks: builder.query<Feedback[], string>({
       query: (placeId) => `/feedback/get-feedback/${placeId}`,
+      providesTags: ["Feedbacks"],
+    }),
+
+    getFeedbackByUser: builder.query<Feedback, string>({
+      query: (userId) => `/feedback/get-feedback-by-user/${userId}`,
       providesTags: ["Feedback"],
     }),
 
@@ -18,7 +23,7 @@ const extendedApi = apiSlice.injectEndpoints({
         method: "POST",
         body: feedback,
       }),
-      invalidatesTags: ["Feedback"],
+      invalidatesTags: ["Feedbacks", "Feedback"],
     }),
 
     updateFeedback: builder.mutation<Feedback, Feedback>({
@@ -27,7 +32,7 @@ const extendedApi = apiSlice.injectEndpoints({
         method: "PUT",
         body: feedback,
       }),
-      invalidatesTags: ["Feedback"],
+      invalidatesTags: ["Feedbacks", "Feedback"],
     }),
 
     deleteFeedback: builder.mutation<boolean, string>({
@@ -35,7 +40,7 @@ const extendedApi = apiSlice.injectEndpoints({
         url: `/feedback/delete-feedback/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Feedback"],
+      invalidatesTags: ["Feedbacks"],
     }),
   }),
 
@@ -43,7 +48,8 @@ const extendedApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useLazyGetWishListQuery,
+  useLazyGetFeedbacksQuery,
+  useLazyGetFeedbackByUserQuery,
   useAddFeedbackMutation,
   useUpdateFeedbackMutation,
   useDeleteFeedbackMutation,

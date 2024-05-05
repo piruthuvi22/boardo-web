@@ -1,8 +1,10 @@
 import {
   AccountCircle,
   AddHome,
+  Bookmark,
   Bookmarks,
   Dashboard,
+  Favorite,
   Home,
   HomeWork,
 } from "@mui/icons-material";
@@ -43,13 +45,29 @@ export const menuItems = {
           title: "Wishlist",
           type: "item",
           url: "/app/place/wishlist",
-          icon: Bookmarks,
+          icon: Favorite,
+          breadcrumbs: false,
+        },
+      ],
+    },
+    {
+      id: "enquiry",
+      title: "My Enquiries",
+      type: "group",
+      children: [
+        {
+          id: "my-enquiries",
+          title: "My Enquiries",
+          type: "item",
+          url: "/app/my-enquiries",
+          icon: Bookmark,
           breadcrumbs: false,
         },
       ],
     },
     {
       id: "profile",
+      title: "Profile",
       type: "group",
       children: [
         {

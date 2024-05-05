@@ -1,4 +1,13 @@
-import { AccessTime, Bathtub, Bookmark, Hotel, LocationOn, NightShelter, Star } from "@mui/icons-material";
+import {
+  AccessTime,
+  Bathtub,
+  Bookmark,
+  Favorite,
+  Hotel,
+  LocationOn,
+  NightShelter,
+  Star,
+} from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -15,6 +24,7 @@ import { useNavigate } from "react-router";
 export default function PlaceCard({ place }: { place: Place }) {
   const theme = useTheme();
   const navigate = useNavigate();
+
   return (
     <>
       <Paper
@@ -78,18 +88,6 @@ export default function PlaceCard({ place }: { place: Place }) {
             position: "relative",
           }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              right: "0",
-              padding: "5px",
-              color: "#fff",
-            }}
-          >
-            <IconButton color="primary" size="small" sx={{ zIndex: 50 }}>
-              <Bookmark />
-            </IconButton>
-          </Box>
           <CardContent
             sx={{
               padding: "10px !important",

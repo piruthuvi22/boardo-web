@@ -64,7 +64,7 @@ function MyComponent({
       placeFrom?.lat && zoomToFitTwoCoordinate();
       placeFrom?.lat && calculateRoute();
     }
-  }, [isLoaded, map, placeFrom, travelMode]);
+  }, [allPlaces, isLoaded, map, placeFrom, travelMode]);
 
   useEffect(() => {
     if (selectedPlace) {
@@ -72,9 +72,20 @@ function MyComponent({
         lat: selectedPlace.coordinates.latitude,
         lng: selectedPlace.coordinates.longitude,
       });
+      // map?.setZoom(zoom! + 3);
+      // map?.panToBounds(
+      //   new window.google.maps.LatLngBounds(initialCenter, initialCenter)
+      // );
     } else {
-      map?.panTo(initialCenter);
-      map?.setZoom(zoom!)
+      const bounds = new window.google.maps.LatLngBounds();
+      allPlaces?.forEach((palce) => {
+        bounds.extend({
+          lat: palce.coordinates?.latitude,
+          lng: palce.coordinates?.longitude,
+        });
+      });
+      map?.fitBounds(bounds, 0);
+      // map?.setZoom(zoom!);
     }
   }, [selectedPlace]);
 
@@ -93,10 +104,17 @@ function MyComponent({
     // map?.moveCamera({ center: bounds.getCenter(), zoom: 10 });
     const zoomLev: number | undefined = map?.getZoom();
     setZoom(zoomLev);
-    setInitialCenter({
-      lat: bounds?.getCenter()?.lat() ?? 0,
-      lng: bounds?.getCenter()?.lng() ?? 0,
-    });
+
+    // setInitialCenter({
+    //   lat: bounds?.getCenter()?.lat() ?? 0,
+    //   lng: bounds?.getCenter()?.lng() ?? 0,
+    // });
+
+    // setZoom(zoomLev);
+    // setInitialCenter({
+    //   lat: bounds?.getCenter()?.lat() ?? 0,
+    //   lng: bounds?.getCenter()?.lng() ?? 0,
+    // });
   };
 
   const zoomToFitTwoCoordinate = async () => {
@@ -111,10 +129,10 @@ function MyComponent({
     });
     map?.fitBounds(bounds);
 
-    setInitialCenter({
-      lat: bounds?.getCenter()?.lat() ?? 0,
-      lng: bounds?.getCenter()?.lng() ?? 0,
-    });
+    // setInitialCenter({
+    //   lat: bounds?.getCenter()?.lat() ?? 0,
+    //   lng: bounds?.getCenter()?.lng() ?? 0,
+    // });
   };
 
   const calculateRoute = async () => {

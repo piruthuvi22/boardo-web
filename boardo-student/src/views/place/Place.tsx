@@ -2,6 +2,9 @@ import {
   AccessTime,
   Bathtub,
   CheckCircle,
+  Favorite,
+  FavoriteBorder,
+  FavoriteOutlined,
   Hotel,
   LocationOn,
   Map,
@@ -17,6 +20,7 @@ import {
   Chip,
   CircularProgress,
   Divider,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
@@ -27,7 +31,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { IconMinusVertical } from "@tabler/icons-react";
-import CommentSection from "components/Comment";
+import CommentSection, { Comment } from "components/Comment";
 import CreateFeedback from "components/CreateFeedback";
 import ImageCarousel from "components/ImageCarousel";
 import { LoaderText } from "components/LoaderText";
@@ -41,6 +45,12 @@ import NearbyPlaces from "components/NearbyPlaces";
 import Enquiry from "components/Enquiry";
 import { useLazyGetReservationsDateRangeQuery } from "store/api/reservationApi";
 import moment from "moment";
+import {
+  useAddRemoveWishListMutation,
+  useLazyGetStatusQuery,
+} from "store/api/wishlistApi";
+import { useLazyGetFeedbackByUserQuery } from "store/api/feedbackApi";
+import { Feedback } from "data/dataModels";
 
 const Place = () => {
   const theme = useTheme();
@@ -64,6 +74,15 @@ const Place = () => {
     },
   ] = useLazyGetReservationsDateRangeQuery();
 
+  const [getStatus, { isFetching, data: status }] = useLazyGetStatusQuery();
+
+  const [addRemoveWishList, { isLoading, data }] =
+    useAddRemoveWishListMutation();
+
+  const [
+    getFeedbackOfUser,
+    { isFetching: isFetchingUserFeedback, data: userFeedback },
+  ] = useLazyGetFeedbackByUserQuery();
   // const { ref } = usePlacesWidget({
   //   apiKey: `${process.env.REACT_APP_GOOGLE_API_KEY!}`,
   //   onPlaceSelected: (place) => console.log(place),
@@ -71,16 +90,30 @@ const Place = () => {
 
   const [openMapDrawer, setOpenMapDrawer] = useState(false);
   const [openEnquiryDrawer, setOpenEnquiryDrawer] = useState(false);
-  const [search, setSearch] = useState("");
+  const [openFeedback, setOpenFeedback] = useState(false);
+  const [editFeedback, setEditFeedback] = useState<Feedback>();
 
   useEffect(() => {
     getPlace(placeId);
+    getStatus({ userId: "663527fd3e66c6dcce652b57", placeId });
+    getFeedbackOfUser("663527fd3e66c6dcce652b57");
   }, []);
 
   const handleEnquiry = (placeId: string) => {
     getReservationsDateRange(placeId);
   };
 
+  const handleAddToWishlist = (placeId: string) => {
+    addRemoveWishList({ userId: "663527fd3e66c6dcce652b59", placeId });
+  };
+
+  const handleEdit = (feedback: Feedback) => {
+    setOpenFeedback(true);
+    setEditFeedback(feedback);
+  };
+
+  console.log("userFeedback",userFeedback);
+  
   if (isPlaceLoading) {
     return <LoaderText isLoading />;
   } else if (place?._id)
@@ -165,7 +198,23 @@ const Place = () => {
                     </Box>
                   </Box>
                   <Box>
+                    {isLoading || isFetching ? (
+                      <CircularProgress size={20} thickness={2} />
+                    ) : (
+                      <IconButton
+                        title={
+                          status ? "Remove from wishlist" : "Add to wishlist"
+                        }
+                        color="primary"
+                        size="small"
+                        sx={{ zIndex: 50 }}
+                        onClick={() => handleAddToWishlist(place._id)}
+                      >
+                        {status ? <Favorite /> : <FavoriteBorder />}
+                      </IconButton>
+                    )}
                     <Button
+                      sx={{ ml: 2 }}
                       startIcon={<Map />}
                       variant="contained"
                       color="primary"
@@ -261,12 +310,14 @@ const Place = () => {
                     </Box>
                   ) : (
                     <List dense={true}>
-                      <ListItem>
-                        <ListItemText
-                          primary="Reservations"
-                          secondary="You can not reserve this place on these dates."
-                        />
-                      </ListItem>
+                      {reservationsDateRange?.length != 0 && (
+                        <ListItem>
+                          <ListItemText
+                            primary="Reservations"
+                            secondary="You can not reserve this place on these dates."
+                          />
+                        </ListItem>
+                      )}
                       {reservationsDateRange?.map((item) => (
                         <ListItem key={item._id}>
                           <ListItemIcon>
@@ -315,15 +366,50 @@ const Place = () => {
               </Accordion>
             </Box>
 
-            <Box
-              component={Paper}
-              sx={{
-                padding: "10px",
-                mb: "10px",
-              }}
-            >
-              <CreateFeedback placeId="6632779317bbb8ce68307643" />
-            </Box>
+            {!userFeedback || openFeedback ? (
+              <Box
+                component={Paper}
+                sx={{
+                  padding: "10px",
+                  mb: "10px",
+                }}
+              >
+                <CreateFeedback
+                  placeId="6632779317bbb8ce68307643"
+                  userFeedback={editFeedback}
+                  onCancel={() => {
+                    setOpenFeedback(false);
+                    setEditFeedback(undefined);
+                  }}
+                />
+              </Box>
+            ) : (
+              <Box
+                component={Paper}
+                sx={{
+                  padding: "10px",
+                  mb: "10px",
+                }}
+                display="flex"
+                flexDirection="column"
+                gap={1}
+              >
+                <Box
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
+                  <Typography variant="h6">Your feedback</Typography>
+                  <Button
+                    variant="text"
+                    onClick={() => handleEdit(userFeedback)}
+                  >
+                    Edit
+                  </Button>
+                </Box>
+                <Comment feedback={userFeedback} />
+              </Box>
+            )}
           </Box>
         </Box>
 

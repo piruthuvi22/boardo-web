@@ -23,7 +23,7 @@
 }
 
 .scrollable-section {
-  height: calc(100vh - 128px);
+  height: calc(100vh - 72px - 32px - 80px);
   flex: 2;
   overflow-y: auto;
   -ms-overflow-style: none; /* IE and Edge */
@@ -34,6 +34,7 @@
   display: none;
 }
 .non-scrollable-section {
+  height: calc(100vh - 72px - 32px - 80px);
   flex: 1;
 }
 
