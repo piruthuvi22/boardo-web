@@ -53,7 +53,7 @@ export const theme = () => {
       minHeight: "calc(100vh - 88px)",
       flexGrow: 1,
       padding: "20px",
-      marginTop: "88px",
+      marginTop: "72px",
     },
     typography: {
       fontFamily: "Poppins, sans-serif",
@@ -96,7 +96,7 @@ export const theme = () => {
       },
       body2: {
         fontSize: "0.875rem",
-        color: themeOption.colors.grey500,
+        color: themeOption.colors.grey600,
         fontWeight: 400,
       },
       caption: {

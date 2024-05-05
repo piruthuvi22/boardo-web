@@ -45,7 +45,7 @@ export interface User {
 
 export interface Feedback {
   _id?: string;
-  email: string;
+  userId: string;
   placeId: string;
   userName: string;
   userImage: string;
@@ -61,7 +61,10 @@ export interface Reservation {
   placeId: string;
   checkIn: string;
   checkOut: string;
+  message: string;
   noOfGuests: number;
+  timestamp?: string;
+  status?: Status;
 }
 
 export interface ReservationsDateRange {
@@ -69,4 +72,14 @@ export interface ReservationsDateRange {
   placeId: string;
   checkIn: string;
   checkOut: string;
+}
+
+export interface ReservationsOfUser extends Omit<Reservation, "placeId"> {
+  placeId: {
+    _id: string;
+    name: string;
+    imageUrls: Array<{ url: string; name: string; fileRef: string }>;
+    rating: number;
+    cost: number;
+  };
 }

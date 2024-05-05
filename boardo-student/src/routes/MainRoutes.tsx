@@ -5,6 +5,7 @@ import { RouteObject, useRoutes } from "react-router-dom";
 import MainLayout from "layout/MainLayout/MainLayout";
 import Loadable from "components/ui-component/Loadable";
 import WishList from "views/wishlist/Wishlist";
+import Enquiries from "views/enquiries/MyEnquiries";
 import useUser from "hooks/useUser";
 
 // dashboard routing
@@ -55,6 +56,10 @@ const MainRoutes: RouteObject[] = [
             element: <WishList />,
           },
         ],
+      },
+      {
+        path: "my-enquiries",
+        element: <Enquiries />,
       },
       {
         path: "profile",

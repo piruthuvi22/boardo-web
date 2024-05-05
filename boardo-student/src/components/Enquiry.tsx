@@ -87,7 +87,7 @@ export default function Enquiry({
       ...data,
       placeId: place._id,
       adminId: place.userId,
-      userId: "66334e98801320d1f48ae04f",
+      userId: "663527fd3e66c6dcce652b57",
     })
       .unwrap()
       .then((res) => {

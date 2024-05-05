@@ -9,43 +9,60 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  useLazyGetFeedbackByUserQuery,
+  useLazyGetFeedbacksQuery,
+} from "store/api/feedbackApi";
+import { Feedback } from "data/dataModels";
+import moment from "moment";
 
 export default function CommentSection() {
+  const [getFeedbacks, { data: feedbacks }] = useLazyGetFeedbacksQuery();
+
+  useEffect(() => {
+    getFeedbacks("6632779317bbb8ce68307643");
+  }, [getFeedbacks]);
+
   return (
     <Box>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Comment key={index} />
+      {feedbacks?.length === 0 && <Typography>{"No feedbacks yet"}</Typography>}
+      {feedbacks?.map((comment, index) => (
+        <Comment feedback={comment} key={index} />
       ))}
     </Box>
   );
 }
-const primaryText = () => {
+const primaryText = (feedback: Feedback) => {
   return (
     <Box mb={1} display={"flex"} gap={2} alignItems={"center"}>
-      <Typography variant="body1">{"John Doe"}</Typography>
-      <Typography variant="body2">{"12 Apr 2024"}</Typography>
+      <Typography variant="body1" fontWeight={500}>
+        {feedback?.userName}
+      </Typography>
+      <Typography variant="body2">
+        {moment(feedback?.timestamp).format("DD MMM YYYY - hh:mm A")}
+      </Typography>
       <Rating
         name="rating"
         size="small"
-        value={3}
+        value={feedback?.rating || 0}
         readOnly
-        onChange={(event, newValue) => {}}
       />
     </Box>
   );
 };
-function Comment() {
+export function Comment({ feedback }: { feedback: Feedback }) {
   return (
-    <ListItem alignItems="flex-start">
+    <ListItem key={feedback?._id} alignItems="flex-start">
       <ListItemAvatar>
-        <Avatar alt="Remy Sharp" src={User1.toString()} />
+        <Avatar
+          alt={feedback?.userName}
+          src={feedback?.userImage || User1.toString()}
+        />
       </ListItemAvatar>
       <ListItemText
-        primary={primaryText()}
-        secondary={
-          "I'll be in your neighborhood doing errands sjd jisbd jsijdfjs bjifsdb fjsb djbsdjkfbalsjbdf dblfajsbf ljbasdl fbdfbl sbflsdbflsbd lfbd this…"
-        }
+        primary={primaryText(feedback)}
+        secondary={feedback?.comment}
       />
     </ListItem>
   );

@@ -140,10 +140,6 @@ export default function SearchResult() {
           <Box
             className="scrollable-section"
             pr={matchDownLg ? 0 : "10px"}
-            sx={{
-              flex: "2 !important",
-              height: "calc(100vh - 128px - 80px) !important",
-            }}
             onMouseLeave={() => setSelectedPlace(undefined)}
           >
             {allPlaces?.map((place) => (
@@ -161,7 +157,6 @@ export default function SearchResult() {
             pl={"10px"}
             sx={{
               flex: "3 !important",
-              height: "calc(100vh - 128px - 80px) !important",
             }}
             display={matchDownLg ? "none" : "block"}
           >

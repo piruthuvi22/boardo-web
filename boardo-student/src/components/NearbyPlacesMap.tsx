@@ -93,6 +93,8 @@ function NearbyPlacesMap({
       onUnmount={() => setMap(undefined)}
       options={{
         disableDefaultUI: true,
+        gestureHandling: "cooperative",
+        zoomControl: true,
         streetViewControl: false,
         clickableIcons: false,
         styles: [
@@ -115,7 +117,7 @@ function NearbyPlacesMap({
           icon={{
             url: "https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi3_hdpi.png",
             // scale: 0.1,
-            scaledSize: new window.google.maps.Size(20,30),
+            scaledSize: new window.google.maps.Size(20, 30),
           }}
           children={
             <>
@@ -135,7 +137,7 @@ function NearbyPlacesMap({
             icon={{
               url: "https://clipart-library.com/image_gallery/81109.png",
               // scale: 0.1,
-              scaledSize: new window.google.maps.Size(20,30),
+              scaledSize: new window.google.maps.Size(20, 30),
             }}
             children={
               <>

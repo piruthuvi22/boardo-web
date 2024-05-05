@@ -1,4 +1,4 @@
-import { Reservation, ReservationsDateRange } from "data/dataModels";
+import { Reservation, ReservationsDateRange, ReservationsOfUser } from "data/dataModels";
 import { apiSlice } from "./apiSlice";
 
 const extendedApi = apiSlice.injectEndpoints({
@@ -7,6 +7,14 @@ const extendedApi = apiSlice.injectEndpoints({
       query: (placeId) => ({
         url: `/reservation/get-reservations/place/${placeId}`,
       }),
+      providesTags: ["Enquiry"],
+    }),
+
+    getReservationsByUser: builder.query<ReservationsOfUser[], string>({
+      query: (userId) => ({
+        url: `/reservation/get-reservations/user/${userId}`,
+      }),
+      providesTags: ["Enquiry"],
     }),
 
     reservePlace: builder.mutation<Reservation, Reservation>({
@@ -15,10 +23,14 @@ const extendedApi = apiSlice.injectEndpoints({
         method: "POST",
         body: reservation,
       }),
+      invalidatesTags: ["Enquiry"],
     }),
   }),
   overrideExisting: true,
 });
 
-export const { useReservePlaceMutation, useLazyGetReservationsDateRangeQuery } =
-  extendedApi;
+export const {
+  useReservePlaceMutation,
+  useLazyGetReservationsByUserQuery,
+  useLazyGetReservationsDateRangeQuery,
+} = extendedApi;
