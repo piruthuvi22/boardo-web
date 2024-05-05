@@ -98,10 +98,10 @@ export default function SignUp() {
       displayName: `${watchFirstName} ${watchLastName}`,
     })
       .then(() => {
-        console.log("Profile updated successfully");
+        console.log("Profile updated successfully in firebase");
       })
       .catch((error) => {
-        console.log("Error in updateProfile(): ", error);
+        console.log("Error in updateProfile() in: ", error);
       });
   };
 
