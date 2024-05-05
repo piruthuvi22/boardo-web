@@ -16,6 +16,7 @@ export default function ReservationRequest() {
 
   useEffect(() => {
     if (userInfo?._id) {
+      console.log("userInfo?._id: ", userInfo?._id);
       getReservations(userInfo?._id);
     }
   }, [getReservations]);
