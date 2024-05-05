@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { CircularProgress, Grid, Typography,Box } from "@mui/material";
 import ReservationCard from "../../components/ReservationCard";
 import ReservationModal from "components/ReservationModal";
 import { useEffect, useState } from "react";
@@ -10,19 +10,22 @@ export default function ReservationRequest() {
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const [
     getReservations,
-    { isLoading, data: reservations, isFetching, isError, error },
+    { isLoading, data: reservations, isError, error },
   ] = useLazyGetReservationsQuery();
   const [selectedReservation, setSelectedReservation] = useState<Reservation>();
 
   useEffect(() => {
     if (userInfo?._id) {
+      console.log("userInfo?._id: ", userInfo?._id);
       getReservations(userInfo?._id);
     }
   }, [getReservations]);
 
 
   return isLoading ? (
-    <Typography variant="h4">Loading...</Typography>
+    <Box display={"flex"} alignItems={"center"} justifyContent={"center"} sx={{height:"100%"}}>
+      <CircularProgress color="secondary" />
+    </Box>
   ) : isError ? (
     <>
       <Typography variant="h4">{error? JSON.stringify(error):"Something went wrong"}</Typography>
@@ -59,6 +62,7 @@ export default function ReservationRequest() {
         checkOut={selectedReservation?.checkOut!}
         message={selectedReservation?.message || ""}
         noOfGuests={selectedReservation?.noOfGuests!}
+        studentNumber={selectedReservation?.studentNumber || "Not Available"}
       />
     </>
   );

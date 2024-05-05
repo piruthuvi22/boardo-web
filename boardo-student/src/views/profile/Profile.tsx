@@ -26,7 +26,10 @@ import { PROVINCES_AND_DISTRICTS } from "data/provinceAndDistricts";
 import { toast } from "react-toastify";
 import AlertDialog from "../../components/Alert";
 import useUser from "hooks/useUser";
-import { useUpdateProfileMutation } from "store/api/authApi";
+import {
+  useLazyGetUserByEmailQuery,
+  useUpdateProfileMutation,
+} from "store/api/authApi";
 import { User } from "data/dataModels";
 
 interface InputsProfile {
@@ -164,14 +167,14 @@ const Profile = () => {
     if (userInfo && res) {
       console.log("User Info from local storage", res);
       const name = userInfo.displayName?.split(" ");
-      setValue("firstName", name ? name[0] : res.data?.firstName || "");
-      setValue("lastName", name ? name[1] :  res.data?.lastName || "");
+      setValue("firstName", name ? name[0] : res.data?.firstName ||res?.firstName|| "");
+      setValue("lastName", name ? name[1] :  res.data?.lastName || res?.lastName || "");
       setValue(
         "phoneNumber",
-        userInfo.providerData[0].phoneNumber ||  res.data?.phoneNumber || ""
+        userInfo.providerData[0].phoneNumber ||  res.data?.phoneNumber ||res?.phoneNumber|| ""
       );
-      setValue("province",  res.data?.province || null);
-      setValue("district",  res.data?.district || null);
+      setValue("province",  res.data?.province || res?.province || null);
+      setValue("district",  res.data?.district || res?.district || null);
     }
   }, [userInfo, setValue]);
 
