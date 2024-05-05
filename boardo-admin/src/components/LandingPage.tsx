@@ -1,51 +1,33 @@
-import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Button } from "@mui/material";
 import { useNavigate } from "react-router";
+import LandingAppBar from "./AppBar";
+import landingHome from "assets/images/home/landingHome.svg";
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const theme = useTheme();
+
   return (
     <>
-      <Box
-        height={"100vh"}
-        sx={{
-          background: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, rgba(255,255,255,1) 100%)`,
-        }}
-      >
-        <Box height={"100%"} className="pattern pattern-vertical-lines-md">
-          <Box
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            height={"100%"}
-          >
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
-              textAlign={"center"}
-            >
-              <Typography fontSize={"4rem"} color={"#222"} fontWeight={"600"}>
-                Welcome to Boardo..
-              </Typography>
-              <Typography fontSize={"1.5rem"} color={"#555"} fontWeight={"400"}>
-                A place to book student accommodations near top universities
-              </Typography>
-              <Box>
-                {/* <TextField
-                  id="outlined-basic"
-                  label="Outlined"
-                  variant="outlined"
-                /> */}
-                <Button
-                  variant="contained"
-                  onClick={() => navigate("/auth/login")}
-                >
-                  Login
-                </Button>
-              </Box>
-            </Box>
-          </Box>
+      <LandingAppBar />
+      <Box display="flex" height={`calc(100vh - 10vh)`} overflow="hidden"> {/* Set overflow to hidden */}
+        <Box width="50%" height="100%" overflow="hidden"> {/* Set overflow to hidden */}
+          <img
+            src={`${landingHome}`}
+            alt="logo"
+            style={{ width: "100%", height: "100%", objectFit: "cover", paddingTop: "7px" }}
+          />
+        </Box>
+
+        <Box textAlign="center" mt={4} width="50%" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+          <Typography variant="h4" color={theme.palette.text.primary} mb={2}>
+            Find Your Boarding Quickly
+          </Typography>
+          <Typography variant="body1" color={theme.palette.text.secondary} mb={4}>
+          Are you struggling to find student accommodations near your university? Boardo helps you discover and book boarding places, even from your hometown.          </Typography>
+          <Button variant="contained" color="primary" onClick={() => navigate("/auth/signup")} size="large">
+            Get Started
+          </Button>
         </Box>
       </Box>
     </>
