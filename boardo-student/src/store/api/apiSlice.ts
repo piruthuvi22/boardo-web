@@ -9,5 +9,5 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQuery,
   endpoints: () => ({}),
-  tagTypes: ["Place", "Feedback", "Feedbacks", "User", "Enquiry", "Wishlist"],
+  tagTypes: ["Place", "Feedback", "Feedbacks", "User", "Enquiry", "Wishlist","WishlistStatus"],
 });

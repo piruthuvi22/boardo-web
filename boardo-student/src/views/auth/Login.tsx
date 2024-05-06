@@ -100,7 +100,7 @@ export default function Login() {
         const user = result.user;
         console.log("sign in with google login: ", user);
         console.log("sign in with google login token: ", token);
-        navigate("/app");
+        navigate("/app/dashboard");
       })
       .catch((error) => {
         console.log(error);

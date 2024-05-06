@@ -17,13 +17,13 @@ const extendedApi = apiSlice.injectEndpoints({
         method: "POST",
         body: place,
       }),
-      invalidatesTags: ["Wishlist"],
+      invalidatesTags: ["WishlistStatus"],
     }),
 
     getStatus: builder.query<boolean, { userId: string; placeId: string }>({
       query: ({ userId, placeId }) =>
         `/wishlist/get-status?placeId=${placeId}&userId=${userId}`,
-      providesTags: ["Wishlist"],
+      providesTags: ["WishlistStatus"],
     }),
   }),
   overrideExisting: true,
