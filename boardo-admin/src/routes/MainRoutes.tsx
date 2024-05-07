@@ -10,7 +10,6 @@ import useUser from "hooks/useUser";
 // dashboard routing
 const Login = Loadable(lazy(() => import("views/auth/Login")));
 const SignUp = Loadable(lazy(() => import("views/auth/SignUp")));
-const Dashboard = Loadable(lazy(() => import("views/dashboard/Dashboard")));
 const MyPlaces = Loadable(lazy(() => import("views/MyPlaces")));
 const Place = Loadable(lazy(() => import("views/place/Place")));
 const Profile = Loadable(lazy(() => import("views/profile/Profile")));
@@ -35,10 +34,6 @@ const MainRoutes: RouteObject[] = [
     path: "/app",
     element: <MainLayout />,
     children: [
-      {
-        path: "dashboard",
-        element: <Dashboard />,
-      },
       {
         path: "place",
         children: [
