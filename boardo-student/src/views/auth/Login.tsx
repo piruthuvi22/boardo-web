@@ -71,7 +71,7 @@ export default function Login() {
             }
           );
           toast.success("Sign in successful");
-          navigate("/app/dashboard");
+          navigate("/app/place/search");
         } else {
           toast.error("Please verify your email address");
         }
