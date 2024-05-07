@@ -20,6 +20,8 @@ import { z } from "zod";
 
 import auth from "../../config/firebase";
 import { toast } from "react-toastify";
+import { useLazyGetUserByEmailQuery } from "store/api/authApi";
+import { useDispatch } from "react-redux";
 
 interface Inputs {
   email: string;
@@ -55,11 +57,19 @@ export default function Login() {
   const watchEmail = watch("email");
   const watchPassword = watch("password");
 
+  const [getUserByEmail] = useLazyGetUserByEmailQuery();
+
   const onSubmit = () => {
     signInWithEmailAndPassword(auth, watchEmail, watchPassword)
       .then((userCredential) => {
         const user = userCredential.user;
         if (user.emailVerified) {
+          getUserByEmail({ email: user.email!, userRole: "ADMIN" }).then(
+            (res) => {
+              console.log("UserInfo", res);
+              localStorage.setItem("userInfo", JSON.stringify(res.data!));
+            }
+          );
           toast.success("Sign in successful");
           navigate("/app/dashboard");
         } else {
