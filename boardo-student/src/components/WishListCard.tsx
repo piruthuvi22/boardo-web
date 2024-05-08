@@ -18,11 +18,14 @@ export default function WishListCard({ place }: { place: Place }) {
   const theme = useTheme();
   const navigate = useNavigate();
 
+  const userStore= localStorage.getItem("userInfo");
+  const userId = JSON.parse(userStore!)._id;
+
   const [addRemoveWishList, { isLoading, data }] =
     useAddRemoveWishListMutation();
 
   const handleRemove = (placeId: string) => {
-    addRemoveWishList({ userId: "663527fd3e66c6dcce652b57", placeId });
+    addRemoveWishList({ userId, placeId });
   };
   return (
     <>

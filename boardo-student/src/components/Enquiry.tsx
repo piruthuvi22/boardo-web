@@ -79,6 +79,9 @@ export default function Enquiry({
   const watchCheckIn = watch("checkIn");
   const watchCheckOut = watch("checkOut");
 
+  const userStore= localStorage.getItem("userInfo");
+  const userId = JSON.parse(userStore!)._id;
+
   const [reservePlace, { data, error, isLoading, isSuccess, isError }] =
     useReservePlaceMutation();
 
@@ -87,7 +90,7 @@ export default function Enquiry({
       ...data,
       placeId: place._id,
       adminId: place.userId,
-      userId: "663527fd3e66c6dcce652b57",
+      userId,
     })
       .unwrap()
       .then((res) => {
