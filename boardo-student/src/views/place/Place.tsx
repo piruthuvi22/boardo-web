@@ -93,10 +93,13 @@ const Place = () => {
   const [openFeedback, setOpenFeedback] = useState(false);
   const [editFeedback, setEditFeedback] = useState<Feedback>();
 
+  const userStore= localStorage.getItem("userInfo");
+  const userId = JSON.parse(userStore!)._id;
+
   useEffect(() => {
     getPlace(placeId);
-    getStatus({ userId: "663527fd3e66c6dcce652b57", placeId });
-    getFeedbackOfUser({ userId: "663527fd3e66c6dcce652b57", placeId });
+    getStatus({ userId, placeId });
+    getFeedbackOfUser({ userId, placeId });
   }, []);
 
   const handleEnquiry = (placeId: string) => {

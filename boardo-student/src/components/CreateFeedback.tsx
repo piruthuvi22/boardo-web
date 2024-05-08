@@ -21,6 +21,8 @@ export default function CreateFeedback({
 }) {
   const [feedback, setFeedback] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
+  const userStore= localStorage.getItem("userInfo");
+  const userId = JSON.parse(userStore!)._id;
 
   const [createFeedback, { isLoading }] = useAddFeedbackMutation();
   const [
@@ -67,7 +69,7 @@ export default function CreateFeedback({
         placeId,
         comment: feedback,
         rating,
-        userId: "663527fd3e66c6dcce652b57",
+        userId,
         userName: "Raj",
         userImage:
           "https://png.pngtree.com/png-vector/20190710/ourmid/pngtree-user-vector-avatar-png-image_1541962.jpg",
@@ -125,8 +127,7 @@ export default function CreateFeedback({
               variant="outlined"
               color="primary"
               size="small"
-              onClick={onCancel}
-            >
+              onClick={onCancel}>
               Cancel
             </Button>
           </>

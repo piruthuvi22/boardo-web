@@ -13,8 +13,11 @@ export default function Enquiries() {
   const [getUserRervationsByUser, { data: userReservations, isLoading, isError }] =
     useLazyGetReservationsByUserQuery();
 
+    const userStore= localStorage.getItem("userInfo");
+    const userId = JSON.parse(userStore!)._id;
+
   useEffect(() => {
-    getUserRervationsByUser("663527fd3e66c6dcce652b57");
+    getUserRervationsByUser(userId);
   }, [getUserRervationsByUser]);
 
   if (isLoading) {
@@ -55,7 +58,7 @@ export default function Enquiries() {
     return (
       <LoaderText
         isNotFound
-        onRetry={() => getUserRervationsByUser("663527fd3e66c6dcce652b57")}
+        onRetry={() => getUserRervationsByUser(userId)}
       />
     );
   }

@@ -12,8 +12,11 @@ export default function WishList() {
   const [getAllWishlist, { data: wishlist, isLoading, isError }] =
     useLazyGetWishListQuery();
 
+  const userStore = localStorage.getItem("userInfo");
+  const userId = JSON.parse(userStore!)._id;
+
   useEffect(() => {
-    getAllWishlist("663527fd3e66c6dcce652b57");
+    getAllWishlist(userId);
   }, [getAllWishlist]);
 
   if (isLoading) {
@@ -34,8 +37,7 @@ export default function WishList() {
             pr={matchDownLg ? 0 : "10px"}
             sx={{
               flex: "2 !important",
-            }}
-          >
+            }}>
             <Grid container spacing={2}>
               {wishlist?.map((place) => (
                 <Grid key={place._id} item xs={12} sm={6} md={4} lg={3}>
@@ -48,6 +50,6 @@ export default function WishList() {
       </>
     );
   } else {
-    return <LoaderText isNotFound onRetry={() => getAllWishlist("663527fd3e66c6dcce652b57")} />;
+    return <LoaderText isNotFound onRetry={() => getAllWishlist(userId)} />;
   }
 }
