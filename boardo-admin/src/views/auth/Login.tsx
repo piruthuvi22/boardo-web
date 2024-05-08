@@ -127,6 +127,7 @@ export default function Login() {
           .unwrap()
           .then((data) => {
             if (data.email === user?.email && data.userRole === "ADMIN") {
+              localStorage.setItem("userInfo", JSON.stringify(data!));
               navigate("/app/place/my-places");
             }
           })
