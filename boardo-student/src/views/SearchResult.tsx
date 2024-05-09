@@ -40,6 +40,7 @@ import { getSearchPlaceData } from "store/searchSlice";
 import GenericModal from "components/GenericModal";
 import { Filters } from "components/Filters";
 import { Tune } from "@mui/icons-material";
+import FiltersBar from "components/FiltersBar";
 
 setKey(process.env.REACT_APP_GOOGLE_API_KEY!); //AIzaSyCjMc0oT2ZkiOh2-DuvmBE4tjazA7Av39M
 setDefaults({
@@ -133,6 +134,7 @@ export default function SearchResult() {
       }
     );
   };
+
   if (isPlacesError) {
     return (
       <LoaderText
@@ -142,66 +144,42 @@ export default function SearchResult() {
       />
     );
   }
-  if (isFetching) {
-    return <LoaderText isLoading />;
-  } else if ((allPlaces?.length ?? 0) > 0) {
-    return (
-      <>
-        <Box
-          height={"80px"}
-          py={"10px"}
-          display={"flex"}
-          justifyContent={"space-between"}
-        >
-          <Box>
-            <Typography variant="body2">
-              Accommodations near{" "}
-              <span style={{ fontWeight: "600" }}>{address && address}</span>
-            </Typography>
+
+  return (
+    <>
+      <Box
+        height={"80px"}
+        pb={"10px"}
+        display={"flex"}
+        justifyContent={"space-between"}
+        // boxShadow={2}
+      >
+        <Box>
+          <Typography variant="body2">
+            Accommodations near{" "}
+            <span style={{ fontWeight: "600" }}>{address && address}</span>
+          </Typography>
+          {(allPlaces?.length ?? 0) > 0 && (
             <Typography variant="body1">
               Showing{" "}
               <span style={{ fontWeight: "600" }}>{allPlaces?.length}</span>{" "}
               places
             </Typography>
-          </Box>
+          )}
+        </Box>
 
-          <Box display={"flex"} gap={1}>
-            {
-              // Loop filter object keys
-              Object.keys(filters).length > 0 &&
-                Object.keys(filters)?.map((key: string) => {
-                  return (
-                    <Chip
-                      key={key}
-                      variant="outlined"
-                      color="primary"
-                      size="small"
-                      label={filters[key]}
-                      onDelete={() => {
-                        const newFilters = { ...filters };
-                        delete newFilters[key];
-                        setFilters(newFilters);
-                      }}
-                    />
-                  );
-                })
-            }
-          </Box>
+        <Box display={"flex"} gap={1}>
+          <FiltersBar filters={filters} setFilters={setFilters} />
+        </Box>
 
-          <Box>
-            {Object.keys(filters).length > 0 ? (
-              <Badge color="secondary" variant="standard" badgeContent={Object.keys(filters).length}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={() => setOpenFilters(true)}
-                  startIcon={<Tune />}
-                >
-                  Filters
-                </Button>
-              </Badge>
-            ) : (
+        <>
+          {Object.keys(filters).length > 0 ? (
+            <Badge
+              sx={{ alignSelf: "center" }}
+              color="secondary"
+              variant="standard"
+              badgeContent={Object.keys(filters).length}
+            >
               <Button
                 variant="outlined"
                 color="primary"
@@ -211,10 +189,24 @@ export default function SearchResult() {
               >
                 Filters
               </Button>
-            )}
-          </Box>
-        </Box>
-
+            </Badge>
+          ) : (
+            <Button
+              sx={{ alignSelf: "center" }}
+              variant="outlined"
+              color="primary"
+              size="small"
+              onClick={() => setOpenFilters(true)}
+              startIcon={<Tune />}
+            >
+              Filters
+            </Button>
+          )}
+        </>
+      </Box>
+      {isFetching ? (
+        <LoaderText isLoading />
+      ) : (
         <Box className="container">
           <Box
             className="scrollable-section"
@@ -242,22 +234,26 @@ export default function SearchResult() {
             <GoogleMap allPlaces={allPlaces} selectedPlace={selectedPlace} />
           </Box>
         </Box>
-        <Filters
-          openFilters={openFilters}
-          closeModal={() => {
-            setOpenFilters(false);
-          }}
-          filters={filters}
-          applyFilters={(filters) => setFilters(filters)}
+      )}
+      {isPlacesError && (
+        <LoaderText
+          isNotFound
+          onRetry={() => getNearestPlaces({ ...coordinates, radius: 5000 })}
         />
-      </>
-    );
-  } else {
-    return (
-      <LoaderText
-        isNotFound
-        onRetry={() => getNearestPlaces({ ...coordinates, radius: 5000 })}
+      )}
+
+      <Filters
+        openFilters={openFilters}
+        closeModal={() => {
+          setOpenFilters(false);
+        }}
+        filters={filters}
+        applyFilters={(filters) => setFilters(filters)}
       />
-    );
-  }
+    </>
+  );
+
+  //  else {
+
+  // }
 }
