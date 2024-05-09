@@ -3,7 +3,6 @@ import customizationReducer from "./customizationReducer";
 import { apiSlice } from "store/api/apiSlice";
 import userDataSlice from "./userLocationSlice";
 import userInfoSlice from "./userInfo";
-import searchPlaceSlice from "./searchSlice";
 
 // ==============================|| REDUX - MAIN STORE ||============================== //
 
@@ -12,7 +11,6 @@ export const store = configureStore({
     customization: customizationReducer,
     userLocation: userDataSlice,
     userInfo: userInfoSlice,
-    searchPlace: searchPlaceSlice,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
