@@ -93,8 +93,19 @@ function LocationPicker({
       onLoad={(map) => setMap(map)}
       onUnmount={() => setMap(undefined)}
       options={{
+        disableDefaultUI: true,
+        gestureHandling: "cooperative",
+        zoomControl: true,
         streetViewControl: false,
         mapTypeControl: false,
+        clickableIcons: false,
+        styles: [
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }],
+          },
+        ],
       }}
     >
       <MarkerF

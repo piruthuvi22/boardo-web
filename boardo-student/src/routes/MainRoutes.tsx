@@ -11,7 +11,7 @@ import useUser from "hooks/useUser";
 // dashboard routing
 const Login = Loadable(lazy(() => import("views/auth/Login")));
 const SignUp = Loadable(lazy(() => import("views/auth/SignUp")));
-const SearchResult = Loadable(lazy(() => import("views/SearchResult")));
+const SearchResult = Loadable(lazy(() => import("views/place/SearchResult")));
 const Place = Loadable(lazy(() => import("views/place/Place")));
 const Profile = Loadable(lazy(() => import("views/profile/Profile")));
 const Home = Loadable(lazy(() => import("views/home/Home")));

@@ -6,6 +6,7 @@ import {
   Drawer,
   Grid,
   IconButton,
+  MenuItem,
   Paper,
   Typography,
   useTheme,
@@ -18,7 +19,6 @@ import Upload from "rc-upload";
 import LocationPicker from "components/LocationPicker";
 import { RcFile } from "rc-upload/lib/interface";
 import { useEffect, useState } from "react";
-import { FACILITIES } from "data/facilities";
 import { uploadFile } from "utils/fileUploader";
 import { Clear, Delete } from "@mui/icons-material";
 import { deleteObject, ref } from "firebase/storage";
@@ -29,6 +29,12 @@ import {
 } from "store/api/placeApi";
 import { Place, Status } from "data/dataModels";
 import { toast } from "react-toastify";
+import {
+  PAYMENT_METHODS,
+  FACILITIES,
+  ROOM_TYPES,
+  WASHROOM_TYPES,
+} from "data/placeData";
 
 interface Inputs {
   name: string;
@@ -142,7 +148,7 @@ export default function PlaceForm({
       setValue("images", place.imageUrls);
       setValue("roomTypes", place.facilities.roomType);
       setValue("noOfBeds", place.facilities.noOfBeds);
-      setValue("washRoomType", place.facilities.washRoomType[0]);
+      setValue("washRoomType", place.facilities.washRoomType);
       setValue("facilities", place.facilities.facilities);
       setValue("paymentType", place.paymentType);
       setValue("cost", place.cost);
@@ -150,9 +156,6 @@ export default function PlaceForm({
       reset();
     }
   }, [place]);
-
-  //console.log("type of cost edit = ", place && typeof place.cost);
-  console.log("type of code", typeof watch("cost"));
 
   const onSubmit: any = (data: Inputs) => {
     if (place) {
@@ -166,7 +169,7 @@ export default function PlaceForm({
         facilities: {
           roomType: data.roomTypes,
           noOfBeds: data.noOfBeds,
-          washRoomType: [data.washRoomType],
+          washRoomType: data.washRoomType,
           facilities: data.facilities,
         },
         paymentType: data.paymentType,
@@ -194,7 +197,7 @@ export default function PlaceForm({
       facilities: {
         roomType: data.roomTypes,
         noOfBeds: data.noOfBeds,
-        washRoomType: [data.washRoomType],
+        washRoomType: data.washRoomType,
         facilities: data.facilities,
       },
       paymentType: data.paymentType,
@@ -213,7 +216,8 @@ export default function PlaceForm({
 
   const uploadImage = async (file: RcFile) => {
     setUploading(true);
-    const path = `places/user1/${file.name}`;
+    const userId = "user1";
+    const path = `places/${userId}/${file.name}`;
     uploadFile(file, path)
       .then((url) => {
         setValue("images", [
@@ -426,21 +430,35 @@ export default function PlaceForm({
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={6}>
                     <TextField2
+                      select
                       label="Room Type"
                       fullWidth
                       {...register("roomTypes")}
                       error={!!errors.roomTypes}
                       helperText={errors.roomTypes?.message}
-                    />
+                    >
+                      {ROOM_TYPES.map((type) => (
+                        <MenuItem key={type.id} value={type.value}>
+                          {type.name}
+                        </MenuItem>
+                      ))}
+                    </TextField2>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField2
+                      select
                       label="Washroom Type"
                       fullWidth
                       {...register("washRoomType")}
                       error={!!errors.washRoomType}
                       helperText={errors.washRoomType?.message}
-                    />
+                    >
+                      {WASHROOM_TYPES.map((type) => (
+                        <MenuItem key={type.id} value={type.value}>
+                          {type.name}
+                        </MenuItem>
+                      ))}
+                    </TextField2>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField2
@@ -455,12 +473,19 @@ export default function PlaceForm({
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField2
+                      select
                       label="Payment Type"
                       fullWidth
                       {...register("paymentType")}
                       error={!!errors.paymentType}
                       helperText={errors.paymentType?.message}
-                    />
+                    >
+                      {PAYMENT_METHODS.map((method) => (
+                        <MenuItem key={method.id} value={method.value}>
+                          {method.name}
+                        </MenuItem>
+                      ))}
+                    </TextField2>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField2

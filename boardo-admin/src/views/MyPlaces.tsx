@@ -69,7 +69,7 @@ export default function MyPlaces() {
     // getAddress(coordinates);
     console.log("UseEff");
 
-    getAllPlaces(coordinates);
+    getAllPlaces("663527ba9315da53fae26633");
   }, [getAllPlaces, coordinates]);
 
   const getAddress = async (coordinates: Coordinates) => {
@@ -91,7 +91,7 @@ export default function MyPlaces() {
     setOpenDrawer(true);
   };
 if(isPlacesError){
-  return <LoaderText message="Something went wrong" isError onRetry={()=>getAllPlaces(coordinates)} />
+  return <LoaderText message="Something went wrong" isError onRetry={()=>getAllPlaces("663527ba9315da53fae26633")} />
 }
   if (isPlacesLoading) {
     return <LoaderText isLoading />;
@@ -167,7 +167,7 @@ if(isPlacesError){
   } else {
     return (
       <>
-        <LoaderText isNotFound onRetry={() => getAllPlaces(coordinates)}>
+        <LoaderText isNotFound onRetry={() => getAllPlaces("663527ba9315da53fae26633")}>
           <Button
             variant="contained"
             onClick={() => setOpenDrawer(true)}

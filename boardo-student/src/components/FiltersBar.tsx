@@ -1,6 +1,5 @@
 import { Box, Chip } from "@mui/material";
 import { SearchFilters } from "data/dataModels";
-import React from "react";
 
 export default function FiltersBar({
   filters,

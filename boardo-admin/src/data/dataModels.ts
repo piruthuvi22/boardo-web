@@ -13,7 +13,7 @@ export interface Place {
   facilities: {
     roomType: string;
     noOfBeds: number;
-    washRoomType: Array<string>;
+    washRoomType: string;
     facilities: Array<string>;
   };
   paymentType: string;
