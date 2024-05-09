@@ -54,6 +54,7 @@ const Header = ({
 
   const handleLogout = () => {
     auth.signOut().then(() => {
+      localStorage.removeItem("userInfo");
       navigate("/auth/login");
     });
   };

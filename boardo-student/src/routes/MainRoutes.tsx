@@ -27,6 +27,7 @@ const Home = Loadable(lazy(() => import("views/home/Home")));
 // ==============================|| MAIN ROUTING ||============================== //
 export default function ThemeRoutes() {
   const { userInfo } = useUser();
+  
   const MainRoutes: RouteObject[] = [
     {
       path: "/",
@@ -90,8 +91,8 @@ const PrivateRoute = ({
   children: any;
   isAuthenticated: User | null;
 }) => {
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/auth/login" replace />;
-  // }
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/login" replace />;
+  }
   return children;
 };
