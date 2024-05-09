@@ -1,12 +1,11 @@
 import { create } from "domain";
 import { apiSlice } from "./apiSlice";
-import { Place, Position } from "data/dataModels";
+import { Place } from "data/dataModels";
 
 const extendedApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllPlaces: builder.query<Place[], Position>({
-      query: ({ latitude, longitude }) =>
-        `/places/get-places?latitude=${latitude}&longitude=${longitude}`,
+    getAllPlaces: builder.query<Place[], string>({
+      query: (userId) => `/places/get-places/user/${userId}`,
       providesTags: ["Places"],
     }),
     getPlaceById: builder.query<Place, string>({

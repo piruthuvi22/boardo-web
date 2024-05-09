@@ -47,13 +47,6 @@ const Main = styled("main", {
     marginLeft: "0px",
     marginRight: "0px",
     width: `calc(100% - ${drawerWidth}px)`,
-    padding: "16px",
-  },
-  [theme.breakpoints.down("xl")]: {
-    // marginLeft: "0px",
-    width: `calc(100% - ${drawerWidth}px)`,
-    padding: "16px",
-    // marginRight: "0px",
   },
 }));
 

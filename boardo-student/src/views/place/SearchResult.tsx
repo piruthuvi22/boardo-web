@@ -1,6 +1,8 @@
 import {
+  Badge,
   Box,
   Button,
+  Chip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -33,8 +35,12 @@ import {
 } from "store/userLocationSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoaderText } from "components/LoaderText";
-import { Place } from "data/dataModels";
+import { Place, SearchFilters } from "data/dataModels";
 import { getSearchPlaceData } from "store/searchSlice";
+import GenericModal from "components/GenericModal";
+import { Filters } from "components/Filters";
+import { Tune } from "@mui/icons-material";
+import FiltersBar from "components/FiltersBar";
 
 setKey(process.env.REACT_APP_GOOGLE_API_KEY!); //AIzaSyCjMc0oT2ZkiOh2-DuvmBE4tjazA7Av39M
 setDefaults({
@@ -63,6 +69,8 @@ export default function SearchResult() {
 
   const [selectedPlace, setSelectedPlace] = useState<Place | undefined>();
   const [address, setAddress] = useState<string | undefined>();
+  const [openFilters, setOpenFilters] = useState(false);
+  const [filters, setFilters] = useState<SearchFilters>({});
 
   // useEffect(() => {
   //   navigator.geolocation.getCurrentPosition((position) => {
@@ -77,14 +85,29 @@ export default function SearchResult() {
   //   getNearestPlaces({ ...coordinates, radius: 30000 });
   // }, [getNearestPlaces, coordinates]);
 
+  console.log("searchPlaceData", searchPlaceData);
+
   useEffect(() => {
+    if (Object.keys(filters).length > 0) {
+      getNearestPlaces({
+        latitude: searchPlaceData.latitude,
+        longitude: searchPlaceData.longitude,
+        radius: searchPlaceData.radius!,
+        ...filters,
+      });
+      return;
+    }
     getNearestPlaces({
       latitude: searchPlaceData.latitude,
       longitude: searchPlaceData.longitude,
       radius: searchPlaceData.radius!,
     });
     setAddress(searchPlaceData.address);
-  }, [getNearestPlaces, searchPlaceData]);
+  }, [getNearestPlaces, searchPlaceData, filters]);
+
+  useEffect(() => {
+    setFilters({});
+  }, [searchPlaceData]);
 
   const onRetry = () => {
     getNearestPlaces({
@@ -92,6 +115,7 @@ export default function SearchResult() {
       longitude: searchPlaceData.longitude,
       radius: searchPlaceData.radius!,
     });
+    setFilters({});
   };
   const getAddress = async (coordinates: Coordinates) => {
     const geocoder = new window.google.maps.Geocoder();
@@ -110,6 +134,7 @@ export default function SearchResult() {
       }
     );
   };
+
   if (isPlacesError) {
     return (
       <LoaderText
@@ -119,23 +144,69 @@ export default function SearchResult() {
       />
     );
   }
-  if (isFetching) {
-    return <LoaderText isLoading />;
-  } else if ((allPlaces?.length ?? 0) > 0) {
-    return (
-      <>
-        <Box height={"80px"} py={"10px"}>
+
+  return (
+    <>
+      <Box
+        height={"80px"}
+        pb={"10px"}
+        display={"flex"}
+        justifyContent={"space-between"}
+        // boxShadow={2}
+      >
+        <Box>
           <Typography variant="body2">
             Accommodations near{" "}
             <span style={{ fontWeight: "600" }}>{address && address}</span>
           </Typography>
-          <Typography variant="body1">
-            Showing{" "}
-            <span style={{ fontWeight: "600" }}>{allPlaces?.length}</span>{" "}
-            places
-          </Typography>
+          {(allPlaces?.length ?? 0) > 0 && (
+            <Typography variant="body1">
+              Showing{" "}
+              <span style={{ fontWeight: "600" }}>{allPlaces?.length}</span>{" "}
+              places
+            </Typography>
+          )}
         </Box>
 
+        <Box display={"flex"} gap={1}>
+          <FiltersBar filters={filters} setFilters={setFilters} />
+        </Box>
+
+        <>
+          {Object.keys(filters).length > 0 ? (
+            <Badge
+              sx={{ alignSelf: "center" }}
+              color="secondary"
+              variant="standard"
+              badgeContent={Object.keys(filters).length}
+            >
+              <Button
+                variant="outlined"
+                color="primary"
+                size="small"
+                onClick={() => setOpenFilters(true)}
+                startIcon={<Tune />}
+              >
+                Filters
+              </Button>
+            </Badge>
+          ) : (
+            <Button
+              sx={{ alignSelf: "center" }}
+              variant="outlined"
+              color="primary"
+              size="small"
+              onClick={() => setOpenFilters(true)}
+              startIcon={<Tune />}
+            >
+              Filters
+            </Button>
+          )}
+        </>
+      </Box>
+      {isFetching ? (
+        <LoaderText isLoading />
+      ) : (
         <Box className="container">
           <Box
             className="scrollable-section"
@@ -163,14 +234,26 @@ export default function SearchResult() {
             <GoogleMap allPlaces={allPlaces} selectedPlace={selectedPlace} />
           </Box>
         </Box>
-      </>
-    );
-  } else {
-    return (
-      <LoaderText
-        isNotFound
-        onRetry={() => getNearestPlaces({ ...coordinates, radius: 5000 })}
+      )}
+      {isPlacesError && (
+        <LoaderText
+          isNotFound
+          onRetry={() => getNearestPlaces({ ...coordinates, radius: 5000 })}
+        />
+      )}
+
+      <Filters
+        openFilters={openFilters}
+        closeModal={() => {
+          setOpenFilters(false);
+        }}
+        filters={filters}
+        applyFilters={(filters) => setFilters(filters)}
       />
-    );
-  }
+    </>
+  );
+
+  //  else {
+
+  // }
 }

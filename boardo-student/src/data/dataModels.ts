@@ -13,7 +13,7 @@ export interface Place {
   facilities: {
     roomType: string;
     noOfBeds: number;
-    washRoomType: Array<string>;
+    washRoomType: string;
     facilities: Array<string>;
   };
   paymentType: string;
@@ -82,4 +82,17 @@ export interface ReservationsOfUser extends Omit<Reservation, "placeId"> {
     rating: number;
     cost: number;
   };
+}
+
+export interface SearchFilters {
+  [key: string]: any;
+  placeName?: string;
+  placeDescription?: string;
+  minBudget?: number | null;
+  maxBudget?: number | null;
+  rating?: number | null;
+  radius?: number | null;
+  paymentType?: string;
+  latitude?: number;
+  longitude?: number;
 }

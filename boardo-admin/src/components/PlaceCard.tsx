@@ -139,7 +139,11 @@ export default function PlaceCard({
                 color={theme.palette.grey[400]}
               >
                 <NightShelter sx={{ fontSize: "18px" }} />
-                {place?.facilities.roomType}
+                {
+                  // Capitalize the first letter of the string
+                  place?.facilities.roomType.charAt(0).toUpperCase() +
+                    place?.facilities.roomType.slice(1)
+                }
               </Typography>
               <Typography
                 variant="subtitle2"
@@ -149,7 +153,11 @@ export default function PlaceCard({
                 color={theme.palette.grey[400]}
               >
                 <Bathtub sx={{ fontSize: "18px" }} />
-                {place?.facilities.washRoomType}
+                {
+                  // Capitalize the first letter of the string
+                  place?.facilities.washRoomType.charAt(0).toUpperCase() +
+                    place?.facilities.washRoomType.slice(1)
+                }
               </Typography>
             </Box>
             <Typography

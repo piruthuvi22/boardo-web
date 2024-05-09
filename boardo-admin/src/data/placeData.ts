@@ -38,3 +38,62 @@ export const FACILITIES: Facility[] = [
   { id: 31, name: "Printers, Scanners, and Copiers" },
   { id: 32, name: "Meditation Room" },
 ];
+
+export const PAYMENT_METHODS = [
+  {
+    id: 1,
+    name: "Per Year",
+    value: "year",
+  },
+  {
+    id: 2,
+    name: "Per Semester",
+    value: "semester",
+  },
+  {
+    id: 3,
+    name: "Per Month",
+    value: "month",
+  },
+  {
+    id: 4,
+    name: "Per Week",
+    value: "week",
+  },
+  {
+    id: 5,
+    name: "Per Day",
+    value: "day",
+  },
+];
+
+export const WASHROOM_TYPES = [
+  {
+    id: 1,
+    name: "Private",
+    value: "private",
+  },
+  {
+    id: 2,
+    name: "Shared",
+    value: "shared",
+  },
+];
+
+export const ROOM_TYPES = [
+  {
+    id: 1,
+    name: "Single",
+    value: "single",
+  },
+  {
+    id: 2,
+    name: "Shared",
+    value: "shared",
+  },
+  {
+    id: 3,
+    name: "Home",
+    value: "home",
+  },
+];

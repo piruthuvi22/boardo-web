@@ -3,7 +3,6 @@ import {
   AddHome,
   Bookmark,
   Bookmarks,
-  Dashboard,
   Favorite,
   Home,
   HomeWork,
@@ -12,21 +11,6 @@ import {
 
 export const menuItems = {
   items: [
-    {
-      id: "dashboard",
-      title: "Dashboard",
-      type: "group",
-      children: [
-        {
-          id: "default",
-          title: "Dashboard",
-          type: "item",
-          url: "/app/dashboard",
-          icon: Dashboard,
-          breadcrumbs: false,
-        },
-      ],
-    },
     {
       id: "places",
       title: "Places",

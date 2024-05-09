@@ -22,7 +22,10 @@ import { z } from "zod";
 
 import auth from "../../config/firebase";
 import { toast } from "react-toastify";
-import { useLazyGetUserByEmailQuery } from "store/api/authApi";
+import {
+  useLazyGetUserByEmailQuery,
+  useRegisterMutation,
+} from "store/api/authApi";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "store/userInfo";
 
@@ -76,7 +79,7 @@ export default function Login() {
             }
           );
           toast.success("Sign in successful");
-          navigate("/app/dashboard");
+          navigate("/app/place/my-places");
         } else {
           toast.error("Please verify your email address");
         }
@@ -108,16 +111,30 @@ export default function Login() {
   };
 
   const provider = new GoogleAuthProvider();
+  const [registration] = useRegisterMutation();
 
   const handleGoogleSignIn = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
         const user = result.user;
-        console.log("sign in with google login: ", user);
-        console.log("sign in with google login token: ", token);
-        navigate("/app");
+        registration({
+          firstName: user?.displayName?.split(" ")[0] || "first name",
+          lastName: user?.displayName?.split(" ")[1] || "last name",
+          email: user.email!,
+          userRole: "ADMIN",
+        })
+          .unwrap()
+          .then((data) => {
+            if (data.email === user?.email && data.userRole === "ADMIN") {
+              localStorage.setItem("userInfo", JSON.stringify(data!));
+              navigate("/app/place/my-places");
+            }
+          })
+          .catch((error) => {
+            console.log("Error in registration(): ", error);
+            toast.error("Error in registration.");
+          });
       })
       .catch((error) => {
         console.log(error);
