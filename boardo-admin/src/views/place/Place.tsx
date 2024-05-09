@@ -29,6 +29,7 @@ import { usePlacesWidget } from "react-google-autocomplete";
 import { useLocation } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import { useLazyGetPlaceByIdQuery } from "store/api/placeApi";
+import { capitalizeText } from "utils/capitalizeText";
 
 const Place = () => {
   const theme = useTheme();
@@ -105,7 +106,7 @@ const Place = () => {
                           color={theme.palette.grey[500]}
                         >
                           <NightShelter sx={{ fontSize: "18px" }} />
-                          {place?.facilities.roomType}
+                          {capitalizeText(place?.facilities.roomType)}
                         </Typography>
                         <Typography
                           variant="subtitle2"
@@ -115,7 +116,7 @@ const Place = () => {
                           color={theme.palette.grey[500]}
                         >
                           <Bathtub sx={{ fontSize: "18px" }} />
-                          {place?.facilities.washRoomType}
+                          {capitalizeText(place?.facilities.washRoomType)}
                         </Typography>
                       </Box>
                     </Box>

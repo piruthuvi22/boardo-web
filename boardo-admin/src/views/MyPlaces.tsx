@@ -18,7 +18,7 @@ import {
   RequestType,
   OutputFormat,
 } from "react-geocode";
-import { useLazyGetAllPlacesQuery } from "store/api/placeApi";
+import { useLazyGetPlacesOfUserQuery } from "store/api/placeApi";
 import GoogleMap from "components/GoogleMap";
 import PlaceCard from "components/PlaceCard";
 import { useEffect, useState } from "react";
@@ -50,10 +50,13 @@ export default function MyPlaces() {
   const coordinates = useSelector(getUserLocationCoordinates);
   const dispatch = useDispatch();
 
+  const response = localStorage.getItem("userInfo");
+  const res = JSON.parse(response!);
+
   const [
-    getAllPlaces,
+    getAllPlacesOfUser,
     { data: allPlaces, isLoading: isPlacesLoading, isError: isPlacesError },
-  ] = useLazyGetAllPlacesQuery();
+  ] = useLazyGetPlacesOfUserQuery();
 
   const [selectedPlace, setSelectedPlace] = useState<Place | undefined>();
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -66,11 +69,8 @@ export default function MyPlaces() {
   }, [dispatch]);
 
   useEffect(() => {
-    // getAddress(coordinates);
-    console.log("UseEff");
-
-    getAllPlaces("663527ba9315da53fae26633");
-  }, [getAllPlaces, coordinates]);
+    if (res?._id) getAllPlacesOfUser(res._id);
+  }, [getAllPlacesOfUser, coordinates]);
 
   const getAddress = async (coordinates: Coordinates) => {
     console.log("aaa");
@@ -90,9 +90,15 @@ export default function MyPlaces() {
     setEditPlace(place);
     setOpenDrawer(true);
   };
-if(isPlacesError){
-  return <LoaderText message="Something went wrong" isError onRetry={()=>getAllPlaces("663527ba9315da53fae26633")} />
-}
+  if (isPlacesError) {
+    return (
+      <LoaderText
+        message="Something went wrong"
+        isError
+        onRetry={() => getAllPlacesOfUser(res._id)}
+      />
+    );
+  }
   if (isPlacesLoading) {
     return <LoaderText isLoading />;
   } else if ((allPlaces?.length ?? 0) > 0) {
@@ -167,7 +173,7 @@ if(isPlacesError){
   } else {
     return (
       <>
-        <LoaderText isNotFound onRetry={() => getAllPlaces("663527ba9315da53fae26633")}>
+        <LoaderText isNotFound onRetry={() => getAllPlacesOfUser(res._id)}>
           <Button
             variant="contained"
             onClick={() => setOpenDrawer(true)}

@@ -20,7 +20,7 @@ const Home = Loadable(lazy(() => import("views/home/Home")));
 // ==============================|| MAIN ROUTING ||============================== //
 
 export default function ThemeRoutes() {
-  const { userInfo } = useUser();
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
   const MainRoutes: RouteObject[] = [
     {
@@ -38,7 +38,10 @@ export default function ThemeRoutes() {
     {
       path: "/app",
       element: (
-        <PrivateRoute children={<MainLayout />} isAuthenticated={userInfo} />
+        <PrivateRoute
+          children={<MainLayout />}
+          isAuthenticated={userInfo?._id ? true : false}
+        />
       ),
       children: [
         {
@@ -78,7 +81,7 @@ const PrivateRoute = ({
   isAuthenticated,
 }: {
   children: any;
-  isAuthenticated: User | null;
+  isAuthenticated: boolean;
 }) => {
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" replace />;

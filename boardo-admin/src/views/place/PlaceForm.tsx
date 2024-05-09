@@ -116,6 +116,8 @@ export default function PlaceForm({
   place?: Place;
   closeDrawer: () => void;
 }) {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo")!);
+  
   const theme = useTheme();
   const {
     register,
@@ -187,7 +189,7 @@ export default function PlaceForm({
     }
     createPlace({
       _id: "",
-      userId: "userid",
+      userId: userInfo?._id,
       name: data.name,
       description: data.description,
       address: data.address,
@@ -216,7 +218,7 @@ export default function PlaceForm({
 
   const uploadImage = async (file: RcFile) => {
     setUploading(true);
-    const userId = "user1";
+    const userId = userInfo?._id;
     const path = `places/${userId}/${file.name}`;
     uploadFile(file, path)
       .then((url) => {

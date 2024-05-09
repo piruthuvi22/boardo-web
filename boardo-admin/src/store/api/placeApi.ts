@@ -4,7 +4,7 @@ import { Place } from "data/dataModels";
 
 const extendedApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllPlaces: builder.query<Place[], string>({
+    getPlacesOfUser: builder.query<Place[], string>({
       query: (userId) => `/places/get-places/user/${userId}`,
       providesTags: ["Places"],
     }),
@@ -32,7 +32,7 @@ const extendedApi = apiSlice.injectEndpoints({
 });
 
 export const {
-  useLazyGetAllPlacesQuery,
+  useLazyGetPlacesOfUserQuery,
   useLazyGetPlaceByIdQuery,
   useCreatePlaceMutation,
   useUpdatePlaceMutation,

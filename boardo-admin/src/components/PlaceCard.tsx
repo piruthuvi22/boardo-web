@@ -21,6 +21,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { Place } from "data/dataModels";
 import { useNavigate } from "react-router";
+import { capitalizeText } from "utils/capitalizeText";
 
 export default function PlaceCard({
   place,
@@ -139,11 +140,7 @@ export default function PlaceCard({
                 color={theme.palette.grey[400]}
               >
                 <NightShelter sx={{ fontSize: "18px" }} />
-                {
-                  // Capitalize the first letter of the string
-                  place?.facilities.roomType.charAt(0).toUpperCase() +
-                    place?.facilities.roomType.slice(1)
-                }
+                {capitalizeText(place?.facilities.roomType)}
               </Typography>
               <Typography
                 variant="subtitle2"
@@ -153,11 +150,7 @@ export default function PlaceCard({
                 color={theme.palette.grey[400]}
               >
                 <Bathtub sx={{ fontSize: "18px" }} />
-                {
-                  // Capitalize the first letter of the string
-                  place?.facilities.washRoomType.charAt(0).toUpperCase() +
-                    place?.facilities.washRoomType.slice(1)
-                }
+                {capitalizeText(place?.facilities.washRoomType)}
               </Typography>
             </Box>
             <Typography

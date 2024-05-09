@@ -73,9 +73,9 @@ export default function Login() {
         if (user.emailVerified) {
           getUserByEmail({ email: user.email!, userRole: "ADMIN" }).then(
             (res) => {
-              console.log("UserInfo", res);
-              dispatch(setUserInfo(res.data!));
+              console.log("Email login", res);
               localStorage.setItem("userInfo", JSON.stringify(res.data!));
+              dispatch(setUserInfo(res.data!));
             }
           );
           toast.success("Sign in successful");
@@ -127,6 +127,8 @@ export default function Login() {
           .unwrap()
           .then((data) => {
             if (data.email === user?.email && data.userRole === "ADMIN") {
+              console.log("Google Singin", data);
+
               localStorage.setItem("userInfo", JSON.stringify(data!));
               navigate("/app/place/my-places");
             }
@@ -159,7 +161,8 @@ export default function Login() {
           t.palette.mode === "light" ? t.palette.grey[50] : t.palette.grey[900],
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}>
+      }}
+    >
       <Grid item xs={false} sm={4} md={7}></Grid>
       <Grid item xs={12} sm={8} md={5} className="glass">
         <Box
@@ -169,7 +172,8 @@ export default function Login() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-          }}>
+          }}
+        >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -179,7 +183,8 @@ export default function Login() {
           <Box
             component={"form"}
             onSubmit={handleSubmit(onSubmit)}
-            sx={{ mt: 1 }}>
+            sx={{ mt: 1 }}
+          >
             <TextField2
               size="small"
               margin="normal"
@@ -206,7 +211,8 @@ export default function Login() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}>
+              sx={{ mt: 3, mb: 2 }}
+            >
               Sign In
             </Button>
             <Grid container>
@@ -229,12 +235,14 @@ export default function Login() {
               alignItems: "center",
               justifyContent: "center",
               height: "100%",
-            }}>
+            }}
+          >
             <Button
               variant="outlined"
               fullWidth
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleGoogleSignIn}>
+              onClick={handleGoogleSignIn}
+            >
               <img
                 src="https://unifysolutions.net/supportedproduct/google-signin/Google__G__Logo.svg"
                 alt="google"
