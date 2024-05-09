@@ -107,15 +107,13 @@ const Place = () => {
   };
 
   const handleAddToWishlist = (placeId: string) => {
-    addRemoveWishList({ userId: "663527fd3e66c6dcce652b59", placeId });
+    addRemoveWishList({ userId: "663527fd3e66c6dcce652b57", placeId });
   };
 
   const handleEdit = (feedback: Feedback) => {
     setOpenFeedback(true);
     setEditFeedback(feedback);
   };
-
-  console.log("userFeedback", userFeedback);
 
   if (isPlaceLoading) {
     return <LoaderText isLoading />;

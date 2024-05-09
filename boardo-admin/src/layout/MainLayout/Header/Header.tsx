@@ -26,8 +26,6 @@ import { Replay } from "@mui/icons-material";
 
 import auth from "../../../config/firebase";
 import { useNavigate } from "react-router";
-import PlaceSearch from "components/PlaceSearch";
-import { setSearchPlaceData } from "store/searchSlice";
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -98,21 +96,6 @@ const Header = ({
 
       {/* header search */}
       <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", gap: 1 }}>
-        {/* <PlaceSearch
-          onPlaceSelected={(place) => {
-            dispatch(
-              setSearchPlaceData({
-                latitude: place.geometry?.location?.lat()!,
-                longitude: place.geometry?.location?.lng()!,
-                placeName: place.name!,
-                address: place.formatted_address!,
-                radius: 5000,
-              })
-            );
-          }}
-          isLabelHidden
-          style={{ width: "400px" }}
-        /> */}
         <IconButton size="small" color="secondary" onClick={setLocation}>
           <Replay />
         </IconButton>
