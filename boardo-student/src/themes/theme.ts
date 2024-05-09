@@ -50,9 +50,9 @@ export const theme = () => {
     mainContent: {
       backgroundColor: themeOption.background,
       width: "100%",
-      minHeight: "calc(100vh - 88px)",
+      minHeight: "calc(100vh - 72px)",
       flexGrow: 1,
-      padding: "20px",
+      padding: "16px",
       marginTop: "72px",
     },
     typography: {

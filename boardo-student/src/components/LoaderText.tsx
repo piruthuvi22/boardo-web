@@ -18,7 +18,7 @@ export function LoaderText({
   return (
     <Box
       sx={{
-        height: "calc(100% - 120px) !important",
+        height: "calc(100vh - 32px - 72px - 80px) !important",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
