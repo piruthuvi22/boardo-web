@@ -103,7 +103,7 @@ export default function PlaceCard({ place }: { place: Place }) {
                 display={"flex"}
                 alignItems={"center"}
                 gap={1}
-                color={theme.palette.grey[400]}
+                color={theme.palette.grey[500]}
               >
                 <Hotel sx={{ fontSize: "18px" }} />
                 {place?.facilities.noOfBeds}
@@ -113,7 +113,7 @@ export default function PlaceCard({ place }: { place: Place }) {
                 display={"flex"}
                 alignItems={"center"}
                 gap={1}
-                color={theme.palette.grey[400]}
+                color={theme.palette.grey[500]}
               >
                 <NightShelter sx={{ fontSize: "18px" }} />
                 {place?.facilities.roomType}
@@ -123,13 +123,13 @@ export default function PlaceCard({ place }: { place: Place }) {
                 display={"flex"}
                 alignItems={"center"}
                 gap={1}
-                color={theme.palette.grey[400]}
+                color={theme.palette.grey[500]}
               >
                 <Bathtub sx={{ fontSize: "18px" }} />
                 {place?.facilities.washRoomType}
               </Typography>
             </Box>
-            <Box display={"flex"} alignItems={"center"} gap={1} mb={1}>
+            {/* <Box display={"flex"} alignItems={"center"} gap={1} mb={1}>
               <LocationOn
                 sx={{ color: theme.palette.grey[400], fontSize: 20 }}
               />
@@ -145,7 +145,7 @@ export default function PlaceCard({ place }: { place: Place }) {
               <Typography variant="body2" textOverflow={"ellipsis"}>
                 3min
               </Typography>
-            </Box>
+            </Box> */}
 
             <Typography
               variant="h5"

@@ -1,6 +1,8 @@
 import {
+  Badge,
   Box,
   Button,
+  Chip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -33,8 +35,11 @@ import {
 } from "store/userLocationSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { LoaderText } from "components/LoaderText";
-import { Place } from "data/dataModels";
+import { Place, SearchFilters } from "data/dataModels";
 import { getSearchPlaceData } from "store/searchSlice";
+import GenericModal from "components/GenericModal";
+import { Filters } from "components/Filters";
+import { Tune } from "@mui/icons-material";
 
 setKey(process.env.REACT_APP_GOOGLE_API_KEY!); //AIzaSyCjMc0oT2ZkiOh2-DuvmBE4tjazA7Av39M
 setDefaults({
@@ -63,6 +68,8 @@ export default function SearchResult() {
 
   const [selectedPlace, setSelectedPlace] = useState<Place | undefined>();
   const [address, setAddress] = useState<string | undefined>();
+  const [openFilters, setOpenFilters] = useState(false);
+  const [filters, setFilters] = useState<SearchFilters>({});
 
   // useEffect(() => {
   //   navigator.geolocation.getCurrentPosition((position) => {
@@ -77,14 +84,29 @@ export default function SearchResult() {
   //   getNearestPlaces({ ...coordinates, radius: 30000 });
   // }, [getNearestPlaces, coordinates]);
 
+  console.log("searchPlaceData", searchPlaceData);
+
   useEffect(() => {
+    if (Object.keys(filters).length > 0) {
+      getNearestPlaces({
+        latitude: searchPlaceData.latitude,
+        longitude: searchPlaceData.longitude,
+        radius: searchPlaceData.radius!,
+        ...filters,
+      });
+      return;
+    }
     getNearestPlaces({
       latitude: searchPlaceData.latitude,
       longitude: searchPlaceData.longitude,
       radius: searchPlaceData.radius!,
     });
     setAddress(searchPlaceData.address);
-  }, [getNearestPlaces, searchPlaceData]);
+  }, [getNearestPlaces, searchPlaceData, filters]);
+
+  useEffect(() => {
+    setFilters({});
+  }, [searchPlaceData]);
 
   const onRetry = () => {
     getNearestPlaces({
@@ -92,6 +114,7 @@ export default function SearchResult() {
       longitude: searchPlaceData.longitude,
       radius: searchPlaceData.radius!,
     });
+    setFilters({});
   };
   const getAddress = async (coordinates: Coordinates) => {
     const geocoder = new window.google.maps.Geocoder();
@@ -124,16 +147,72 @@ export default function SearchResult() {
   } else if ((allPlaces?.length ?? 0) > 0) {
     return (
       <>
-        <Box height={"80px"} py={"10px"}>
-          <Typography variant="body2">
-            Accommodations near{" "}
-            <span style={{ fontWeight: "600" }}>{address && address}</span>
-          </Typography>
-          <Typography variant="body1">
-            Showing{" "}
-            <span style={{ fontWeight: "600" }}>{allPlaces?.length}</span>{" "}
-            places
-          </Typography>
+        <Box
+          height={"80px"}
+          py={"10px"}
+          display={"flex"}
+          justifyContent={"space-between"}
+        >
+          <Box>
+            <Typography variant="body2">
+              Accommodations near{" "}
+              <span style={{ fontWeight: "600" }}>{address && address}</span>
+            </Typography>
+            <Typography variant="body1">
+              Showing{" "}
+              <span style={{ fontWeight: "600" }}>{allPlaces?.length}</span>{" "}
+              places
+            </Typography>
+          </Box>
+
+          <Box display={"flex"} gap={1}>
+            {
+              // Loop filter object keys
+              Object.keys(filters).length > 0 &&
+                Object.keys(filters)?.map((key: string) => {
+                  return (
+                    <Chip
+                      key={key}
+                      variant="outlined"
+                      color="primary"
+                      size="small"
+                      label={filters[key]}
+                      onDelete={() => {
+                        const newFilters = { ...filters };
+                        delete newFilters[key];
+                        setFilters(newFilters);
+                      }}
+                    />
+                  );
+                })
+            }
+          </Box>
+
+          <Box>
+            {Object.keys(filters).length > 0 ? (
+              <Badge color="secondary" variant="standard" badgeContent={Object.keys(filters).length}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={() => setOpenFilters(true)}
+                  startIcon={<Tune />}
+                >
+                  Filters
+                </Button>
+              </Badge>
+            ) : (
+              <Button
+                variant="outlined"
+                color="primary"
+                size="small"
+                onClick={() => setOpenFilters(true)}
+                startIcon={<Tune />}
+              >
+                Filters
+              </Button>
+            )}
+          </Box>
         </Box>
 
         <Box className="container">
@@ -163,6 +242,14 @@ export default function SearchResult() {
             <GoogleMap allPlaces={allPlaces} selectedPlace={selectedPlace} />
           </Box>
         </Box>
+        <Filters
+          openFilters={openFilters}
+          closeModal={() => {
+            setOpenFilters(false);
+          }}
+          filters={filters}
+          applyFilters={(filters) => setFilters(filters)}
+        />
       </>
     );
   } else {

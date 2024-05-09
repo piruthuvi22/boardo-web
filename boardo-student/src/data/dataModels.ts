@@ -83,3 +83,16 @@ export interface ReservationsOfUser extends Omit<Reservation, "placeId"> {
     cost: number;
   };
 }
+
+export interface SearchFilters {
+  [key: string]: any;
+  placeName?: string;
+  placeDescription?: string;
+  minBudget?: number | null;
+  maxBudget?: number | null;
+  rating?: number | null;
+  radius?: number|null;
+  paymentType?: string;
+  latitude?: number;
+  longitude?: number;
+}
