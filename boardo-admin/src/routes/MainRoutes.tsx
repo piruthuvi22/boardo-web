@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import { Navigate, RouteObject, useRoutes } from "react-router-dom";
 
 // project imports
@@ -8,6 +8,8 @@ import ReservationRequest from "views/reservations/ReservationRequests";
 import useUser from "hooks/useUser";
 import { User } from "firebase/auth";
 import NotFound from "views/404";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "store/store";
 
 // dashboard routing
 const Login = Loadable(lazy(() => import("views/auth/Login")));
@@ -20,7 +22,7 @@ const Home = Loadable(lazy(() => import("views/home/Home")));
 // ==============================|| MAIN ROUTING ||============================== //
 
 export default function ThemeRoutes() {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const { userInfo } = useUser();
 
   const MainRoutes: RouteObject[] = [
     {
@@ -36,13 +38,16 @@ export default function ThemeRoutes() {
       element: <SignUp />,
     },
     {
+      // path: "/app",
+      // element:
+      //   loading && userInfo?.uid ? (
+      //     <MainLayout />
+      //   ) : (
+      //     <Navigate to="/auth/login" replace />
+      //   ),
+
       path: "/app",
-      element: (
-        <PrivateRoute
-          children={<MainLayout />}
-          isAuthenticated={userInfo?._id ? true : false}
-        />
-      ),
+      element: <MainLayout />,
       children: [
         {
           path: "place",
@@ -73,7 +78,8 @@ export default function ThemeRoutes() {
     },
   ];
 
-  return useRoutes(MainRoutes);
+  const routes = userInfo ? MainRoutes : MainRoutes.slice(0, 3);
+  return useRoutes(routes);
 }
 
 const PrivateRoute = ({
@@ -81,10 +87,10 @@ const PrivateRoute = ({
   isAuthenticated,
 }: {
   children: any;
-  isAuthenticated: boolean;
+  isAuthenticated: User | null;
 }) => {
-  if (!isAuthenticated) {
-    return <Navigate to="/auth/login" replace />;
-  }
+  console.log("Private Route", isAuthenticated);
+
+  if (isAuthenticated == null) return <Navigate to="/auth/login" replace />;
   return children;
 };

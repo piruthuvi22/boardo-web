@@ -171,55 +171,7 @@ const Place = () => {
             pl={"10px"}
             display={matchDownLg ? "none" : "block"}
           >
-            <Box
-              component={Paper}
-              sx={{
-                padding: "10px",
-              }}
-              display="flex"
-              flexDirection="column"
-              gap={1}
-            >
-              <Accordion>
-                <AccordionSummary
-                  aria-controls="panel1-content"
-                  id="panel1-header"
-                  sx={styles.accordion}
-                >
-                  <Button variant="contained" fullWidth>
-                    Enquiry
-                  </Button>
-                </AccordionSummary>
-                <AccordionDetails sx={{ paddingX: 0 }}>
-                  <Box display={"flex"}>
-                    <Typography variant="subtitle1">Enquiry</Typography>
-                    <Typography variant="subtitle1">Enquiry</Typography>
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion
-                sx={{
-                  "::before": {
-                    display: "none",
-                  },
-                }}
-              >
-                <AccordionSummary
-                  aria-controls="panel2-content"
-                  id="panel2-header"
-                  sx={styles.accordion}
-                >
-                  <Button variant="outlined" fullWidth>
-                    Enquiry
-                  </Button>
-                </AccordionSummary>
-                <AccordionDetails sx={{ paddingX: 0 }}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                  eget.
-                </AccordionDetails>
-              </Accordion>
-            </Box>
+            {/* Non-scrollable section */}
           </Box>
         </Box>
 

@@ -20,6 +20,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { Place } from "data/dataModels";
 import { useNavigate } from "react-router";
+import { capitalizeText } from "utils/capitalizeText";
 
 export default function PlaceCard({ place }: { place: Place }) {
   const theme = useTheme();
@@ -116,7 +117,7 @@ export default function PlaceCard({ place }: { place: Place }) {
                 color={theme.palette.grey[500]}
               >
                 <NightShelter sx={{ fontSize: "18px" }} />
-                {place?.facilities.roomType}
+                {capitalizeText(place?.facilities.roomType)}
               </Typography>
               <Typography
                 variant="subtitle2"
@@ -126,7 +127,7 @@ export default function PlaceCard({ place }: { place: Place }) {
                 color={theme.palette.grey[500]}
               >
                 <Bathtub sx={{ fontSize: "18px" }} />
-                {place?.facilities.washRoomType}
+                {capitalizeText(place?.facilities.washRoomType)}
               </Typography>
             </Box>
             {/* <Box display={"flex"} alignItems={"center"} gap={1} mb={1}>
