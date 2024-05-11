@@ -73,7 +73,6 @@ export default function Login() {
         if (user.emailVerified) {
           getUserByEmail({ email: user.email!, userRole: "ADMIN" }).then(
             (res) => {
-              console.log("Email login", res);
               localStorage.setItem("userInfo", JSON.stringify(res.data!));
               dispatch(setUserInfo(res.data!));
             }
@@ -127,8 +126,6 @@ export default function Login() {
           .unwrap()
           .then((data) => {
             if (data.email === user?.email && data.userRole === "ADMIN") {
-              console.log("Google Singin", data);
-
               localStorage.setItem("userInfo", JSON.stringify(data!));
               navigate("/app/place/my-places");
             }

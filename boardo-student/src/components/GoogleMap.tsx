@@ -10,6 +10,7 @@ import {
 import { Place } from "data/dataModels";
 import { APIProvider, Map, useMap } from "@vis.gl/react-google-maps";
 import { Box, Typography, useTheme } from "@mui/material";
+import { AccessTime, LocationOn } from "@mui/icons-material";
 
 const containerStyle = {
   width: "100%",
@@ -46,6 +47,8 @@ function MyComponent({
   );
 
   const [zoom, setZoom] = useState<number | undefined>(10);
+  const [distance, setDistance] = useState<string | undefined>(undefined);
+  const [duration, setDuration] = useState<string | undefined>(undefined);
 
   const [directionsResponse, setDirectionsResponse] =
     useState<google.maps.DirectionsResult>();
@@ -148,6 +151,10 @@ function MyComponent({
       },
       travelMode: travelMode as google.maps.TravelMode,
     });
+    // console.log(results);
+    setDistance(results?.routes[0]?.legs[0]?.distance?.text);
+    setDuration(results?.routes[0]?.legs[0]?.duration?.text);
+
     // results.available_travel_modes
     // Above line gives available travel modes. But sometimes it gives error
     setDirectionsResponse(results);
@@ -202,8 +209,25 @@ function MyComponent({
           }}
         >
           <Box p={1}>
-            <Typography variant="subtitle2">{placeFrom.name}</Typography>
-            <Typography variant="subtitle2">{placeFrom.address}</Typography>
+            <Typography
+              variant="subtitle2"
+              display={"flex"}
+              alignItems={"center"}
+              gap={1}
+            >
+              <LocationOn fontSize="small" color="primary" />
+              <span> {placeFrom.name}</span>
+            </Typography>
+
+            <Typography
+              variant="subtitle2"
+              display={"flex"}
+              alignItems={"center"}
+              gap={1}
+            >
+              <AccessTime fontSize="small" color="primary" />
+              <span> {distance + " | " + duration}</span>
+            </Typography>
           </Box>
         </InfoWindowF>
       )}

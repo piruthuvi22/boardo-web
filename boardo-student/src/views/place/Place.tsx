@@ -2,6 +2,7 @@ import {
   AccessTime,
   Bathtub,
   CheckCircle,
+  ContentCopy,
   Favorite,
   FavoriteBorder,
   FavoriteOutlined,
@@ -9,6 +10,8 @@ import {
   LocationOn,
   Map,
   NightShelter,
+  Share,
+  WhatsApp,
   Wifi,
 } from "@mui/icons-material";
 import {
@@ -25,11 +28,14 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Menu,
+  MenuItem,
   Paper,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { WhatsappShareButton } from "react-share";
 import { IconMinusVertical } from "@tabler/icons-react";
 import CommentSection, { Comment } from "components/Comment";
 import CreateFeedback from "components/CreateFeedback";
@@ -51,6 +57,8 @@ import {
 } from "store/api/wishlistApi";
 import { useLazyGetFeedbackByUserQuery } from "store/api/feedbackApi";
 import { Feedback } from "data/dataModels";
+import { toast } from "react-toastify";
+import { capitalizeText } from "utils/capitalizeText";
 
 const Place = () => {
   const theme = useTheme();
@@ -92,8 +100,10 @@ const Place = () => {
   const [openEnquiryDrawer, setOpenEnquiryDrawer] = useState(false);
   const [openFeedback, setOpenFeedback] = useState(false);
   const [editFeedback, setEditFeedback] = useState<Feedback>();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-  const userStore= localStorage.getItem("userInfo");
+  const userStore = localStorage.getItem("userInfo");
   const userId = JSON.parse(userStore!)._id;
 
   useEffect(() => {
@@ -107,12 +117,20 @@ const Place = () => {
   };
 
   const handleAddToWishlist = (placeId: string) => {
-    addRemoveWishList({ userId: "663527fd3e66c6dcce652b57", placeId });
+    addRemoveWishList({ userId, placeId });
   };
 
   const handleEdit = (feedback: Feedback) => {
     setOpenFeedback(true);
     setEditFeedback(feedback);
+  };
+
+  const handleShare = (placeId: string, type: string) => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/app/place?id=${placeId}`
+    );
+    setAnchorEl(null);
+    toast.success("Link copied to clipboard");
   };
 
   if (isPlaceLoading) {
@@ -184,7 +202,7 @@ const Place = () => {
                         color={theme.palette.grey[500]}
                       >
                         <NightShelter sx={{ fontSize: "18px" }} />
-                        {place?.facilities.roomType}
+                        {capitalizeText(place?.facilities.roomType)}
                       </Typography>
                       <Typography
                         variant="subtitle2"
@@ -194,7 +212,7 @@ const Place = () => {
                         color={theme.palette.grey[500]}
                       >
                         <Bathtub sx={{ fontSize: "18px" }} />
-                        {place?.facilities.washRoomType}
+                        {capitalizeText(place?.facilities.washRoomType)}
                       </Typography>
                     </Box>
                   </Box>
@@ -214,6 +232,47 @@ const Place = () => {
                         {status ? <Favorite /> : <FavoriteBorder />}
                       </IconButton>
                     )}
+                    <IconButton
+                      title={"Share this place"}
+                      color="primary"
+                      size="small"
+                      sx={{ zIndex: 50 }}
+                      onClick={(e) => setAnchorEl(e.currentTarget)}
+                    >
+                      {<Share />}
+                    </IconButton>
+
+                    <Menu
+                      id="share-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={() => {}}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem onClick={() => handleShare(place._id, "copy")}>
+                        <ListItemIcon>
+                          <ContentCopy fontSize="small" color="primary" />
+                        </ListItemIcon>
+                        <ListItemText>Copy Link</ListItemText>
+                      </MenuItem>
+
+                      <MenuItem>
+                        <WhatsappShareButton
+                          style={{ display: "flex", alignItems: "center" }}
+                          url={`${window.location.origin}/app/place?id=${place._id}`}
+                          title={place.name}
+                          separator=":: "
+                          className="Demo__some-network__share-button"
+                        >
+                          <ListItemIcon>
+                            <WhatsApp fontSize="small" color="primary" />
+                          </ListItemIcon>
+                          <ListItemText>WhatsApp</ListItemText>
+                        </WhatsappShareButton>
+                      </MenuItem>
+                    </Menu>
                     <Button
                       sx={{ ml: 2 }}
                       startIcon={<Map />}
@@ -309,6 +368,22 @@ const Place = () => {
                     <Box display={"flex"} justifyContent={"center"}>
                       <CircularProgress size={20} thickness={2} />
                     </Box>
+                  ) : reservationsDateRange?.length == 0 ? (
+                    <>
+                      <ListItem>
+                        <ListItemText
+                          primary="No Reservations"
+                          secondary="You can reserve this place"
+                        />
+                      </ListItem>
+                      <Button
+                        variant="text"
+                        fullWidth
+                        onClick={() => setOpenEnquiryDrawer(true)}
+                      >
+                        Enquire Now
+                      </Button>
+                    </>
                   ) : (
                     <List dense={true}>
                       {reservationsDateRange?.length != 0 && (
@@ -354,13 +429,6 @@ const Place = () => {
                           />
                         </ListItem>
                       ))}
-                      <Button
-                        variant="text"
-                        fullWidth
-                        onClick={() => setOpenEnquiryDrawer(true)}
-                      >
-                        Enquire Now
-                      </Button>
                     </List>
                   )}
                 </AccordionDetails>

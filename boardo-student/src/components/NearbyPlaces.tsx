@@ -51,6 +51,28 @@ export default function NearbyPlaces({
     apiKey: `${process.env.REACT_APP_GOOGLE_API_KEY!}`,
   });
 
+  const findNearbyPopularUniversity = () => {
+    placesService?.nearbySearch(
+      {
+        location: {
+          lat: 6.794855,
+          lng: 79.900369,
+        },
+        radius: 500,
+        type: "university",
+      },
+      (results, status) => {
+        if (status === "OK") {
+          console.log(results);
+
+          return results;
+        } else {
+          console.error(`Places request failed: ${status}`);
+        }
+      }
+    );
+  };
+
   useEffect(() => {
     placesService?.nearbySearch(
       {

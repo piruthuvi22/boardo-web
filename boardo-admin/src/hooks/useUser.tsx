@@ -4,11 +4,13 @@ import auth from "../config/firebase";
 
 const useUser = () => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
       if (user) {
         setUserInfo(user);
+        setLoading(false);
       } else {
         // User is signed out
         setUserInfo(null);
@@ -18,10 +20,7 @@ const useUser = () => {
     return unsubscribe;
   }, []);
 
-  return { userInfo };
+  return { userInfo, loading};
 };
 
 export default useUser;
-
-
-
