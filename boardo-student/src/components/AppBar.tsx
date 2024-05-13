@@ -10,15 +10,16 @@ import boardo from "../assets/images/icons/boardo-logo.svg";
 export default function LandingAppBar() {
   const navigate = useNavigate();
   return (
-    <Box sx={{ flexGrow: 1 }} height={"10vh"}>
+    <Box sx={{}}>
       <AppBar position="static">
-        <Toolbar sx={{p:0}}>
+        <Toolbar sx={{ p: 0 }}>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}>
+            sx={{ mr: 2 }}
+          >
             <img src={`${boardo}`} alt="boardo" width="50px" />
           </IconButton>
 
